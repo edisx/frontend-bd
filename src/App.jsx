@@ -1,9 +1,29 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import CartScreen from "./screens/CartScreen";
+
+
 const App = () => {
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <p>Hello world</p>
-    </div>
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <div className="flex-grow p-4">
+          {/* all the routes */}
+          <Routes>
+            <Route path="/" element={<HomeScreen />} exact />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/cart" element={<CartScreen />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
+    </Router>
   );
 };
 
