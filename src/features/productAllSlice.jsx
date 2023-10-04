@@ -7,8 +7,6 @@ const API_URL = USE_PROXY ? import.meta.env.VITE_API_URL : "";
 
 
 
-
-
 export const fetchAllProducts = createAsyncThunk(
   "productAll/fetchAllProducts",
   async () => {
