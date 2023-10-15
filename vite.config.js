@@ -11,14 +11,19 @@ export default defineConfig({
     port: 3000,
     open: false, //open browser on start
 
-    // dev proxies
+    //dev proxies
     proxy: {
       "/api": {
         target: "http://127.0.0.1:8000",
         changeOrigin: true,
         secure: false,
       },
-      "/media": {
+      "/media/models": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/media/products": {
         target: "http://127.0.0.1:8000",
         changeOrigin: true,
         secure: false,
