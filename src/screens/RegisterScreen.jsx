@@ -19,7 +19,6 @@ const RegisterScreen = () => {
     dispatch(registerUser({ name, email, password }))
       .unwrap()
       .then(response => {
-        console.log('Registration successful', response);
         navigate('/'); // Redirect to login after successful registration
       })
       .catch(error => {

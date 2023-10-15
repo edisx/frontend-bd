@@ -18,7 +18,6 @@ const LoginScreen = () => {
     dispatch(loginUser({ username: email, password }))
       .unwrap()
       .then((response) => {
-        console.log("Login successful", response);
         navigate("/");
       })
       .catch((error) => {

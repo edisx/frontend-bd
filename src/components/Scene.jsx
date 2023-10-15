@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { useGLTF } from "@react-three/drei";
-import { Suspense } from 'react';
 
 const USE_PROXY = import.meta.env.VITE_PROXY === "False";
 const API_URL = USE_PROXY ? import.meta.env.VITE_API_URL : "";
@@ -11,7 +10,6 @@ const Scene = (props) => {
     return <h1>NO MODEL</h1>;
   }
   const modelURL = `${API_URL}${props.model}`;
-  console.log(`${API_URL}${props.model}`);
 
   const { scene } = useGLTF(modelURL);
 
