@@ -13,6 +13,8 @@ try {
 }
 const defaultState = {
   userInfo: savedUserInfo ? savedUserInfo : null,
+  usersList: [],
+  userDetail: {},
   loading: "idle",
   error: null,
 };
@@ -97,6 +99,110 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
+// Async action to get all users
+export const getUsers = createAsyncThunk(
+  'user/getUsers',
+  async (_, { rejectWithValue, getState }) => {
+    const {
+      user: { userInfo },
+    } = getState();
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/users/`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+// Async action to delete a user
+export const deleteUser = createAsyncThunk(
+  'user/deleteUser',
+  async (userId, { rejectWithValue, getState }) => {
+    const {
+      user: { userInfo },
+    } = getState();
+    try {
+      await axios.delete(
+        `${API_URL}/api/users/delete/${userId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return userId; // return userId to indicate successful deletion
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+// Async action to fetch a user by ID
+export const fetchUserById = createAsyncThunk(
+  'user/fetchUserById',
+  async (userId, { rejectWithValue, getState }) => {
+    const {
+      user: { userInfo },
+    } = getState();
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/users/${userId}/`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+// Async action to update a user
+export const updateUser = createAsyncThunk(
+  'user/updateUser',
+  async ({ userId, data }, { rejectWithValue, getState }) => {
+    const { name, email, password, isAdmin} = data;
+    const {
+      user: { userInfo },
+    } = getState();
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/users/update/${userId}/`,
+        {
+          name,
+          email,
+          password,
+          isAdmin
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+
 const userSlice = createSlice({
   name: "user",
   initialState: defaultState,
@@ -160,6 +266,53 @@ const userSlice = createSlice({
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
     });
     builder.addCase(updateUserProfile.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload?.detail || "An error occurred.";
+    });
+
+    // getUsers
+    builder.addCase(getUsers.pending, (state) => {
+      state.loading = "loading";
+    });
+    builder.addCase(getUsers.fulfilled, (state, action) => {
+      state.loading = "idle";
+      state.usersList = action.payload;
+      state.error = null;
+    });
+    builder.addCase(getUsers.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload?.detail || "An error occurred.";
+    });
+
+    // deleteUser
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      state.usersList = state.usersList.filter(user => user.id !== action.payload);
+    });
+
+    // fetchUserById
+    builder.addCase(fetchUserById.pending, (state) => {
+      state.loading = "loading";
+    });
+    builder.addCase(fetchUserById.fulfilled, (state, action) => {
+      state.loading = "idle";
+      state.userDetail = action.payload;
+      state.error = null;
+    });
+    builder.addCase(fetchUserById.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload?.detail || "An error occurred.";
+    });
+
+    // updateUser
+    builder.addCase(updateUser.pending, (state) => {
+      state.loading = "loading";
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = "idle";
+      state.userDetail = action.payload; 
+      state.error = null;
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
       state.loading = "idle";
       state.error = action.payload?.detail || "An error occurred.";
     });

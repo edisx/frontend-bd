@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchSingleProduct } from "../features/productSingleSlice";
+import { fetchSingleProduct } from "../features/productSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import ProductCart from "../components/ProductCart";
@@ -11,7 +11,7 @@ import { Suspense } from "react";
 const ProductScreen = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const productSingle = useSelector((state) => state.productSingle);
+  const productSingle = useSelector((state) => state.products);
   const { product, loading, error } = productSingle;
 
   useEffect(() => {
