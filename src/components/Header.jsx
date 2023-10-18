@@ -39,6 +39,9 @@ const Header = () => {
                   <li className="px-4 py-2">
                     <Link to="/admin/userList">Users List</Link>
                   </li>
+                  <li className="px-4 py-2">
+                    <Link to="/admin/categoryList">Categories List</Link>
+                  </li>
                 </ul>
               </li>
             )}

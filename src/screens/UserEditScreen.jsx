@@ -6,18 +6,14 @@ import Message from "../components/Message";
 import { fetchUserById, updateUser } from "../features/userSlice";
 
 const UserEditScreen = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  console.log(`id: ${id}`);
-  const dispatch = useDispatch();
-
+  const { id } = useParams(),
+    navigate = useNavigate(),
+    dispatch = useDispatch();
+  const { userDetail, status, error } = useSelector((state) => state.user);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [fetchedUserId, setFetchedUserId] = useState(null);
-
-  // Corrected the extraction of userDetail from state
-  const { userDetail, status, error } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!userDetail || fetchedUserId !== id) {
@@ -32,7 +28,6 @@ const UserEditScreen = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(` new id: ${id}`);
     dispatch(updateUser({ userId: id, data: { name, email, isAdmin } }));
     navigate("/admin/userlist");
   };
@@ -40,12 +35,11 @@ const UserEditScreen = () => {
   return (
     <div className="p-5">
       <button
-        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+        className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-l"
         onClick={() => navigate("/admin/userlist")}
       >
         Go Back
       </button>
-
       {status === "loading" ? (
         <Loader />
       ) : error ? (
@@ -54,13 +48,13 @@ const UserEditScreen = () => {
         <form onSubmit={submitHandler} className="mt-5">
           <div className="mb-4">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="text-gray-700 text-sm font-bold mb-2"
               htmlFor="name"
             >
               Name
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
               id="name"
               type="text"
               placeholder="Enter name"
@@ -68,16 +62,15 @@ const UserEditScreen = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
           <div className="mb-4">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="text-gray-700 text-sm font-bold mb-2"
               htmlFor="email"
             >
               Email Address
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
               id="email"
               type="email"
               placeholder="Enter email"
@@ -85,19 +78,17 @@ const UserEditScreen = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+            <label className="text-gray-700 text-sm font-bold mb-2">
               <input
-                className="mr-2 leading-tight"
+                className="mr-2"
                 type="checkbox"
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
               />
-              <span className="text-sm">Is Admin</span>
+              Is Admin
             </label>
           </div>
-
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             type="submit"
