@@ -102,7 +102,7 @@ export const updateUserProfile = createAsyncThunk(
 // Async action to get all users
 export const getUsers = createAsyncThunk(
   'user/getUsers',
-  async (_, { rejectWithValue, getState }) => {
+  async (_,{ rejectWithValue, getState }) => {
     const {
       user: { userInfo },
     } = getState();

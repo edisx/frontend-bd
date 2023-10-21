@@ -16,10 +16,8 @@ export const fetchAllCategories = createAsyncThunk(
 // create category {{URL}}/api/categories/create
 export const createCategory = createAsyncThunk(
   "categories/createCategory/",
-  async (category, { rejectWithValue, getState }) => {
-    const {
-      user: { userInfo },
-    } = getState();
+  async (category, { getState, rejectWithValue }) => {
+    const {user: { userInfo }} = getState();
 
     try {
       const { data } = await axios.post(
@@ -36,6 +34,7 @@ export const createCategory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
+
   }
 );
 
@@ -110,7 +109,10 @@ const categorySlice = createSlice({
     });
     builder.addCase(fetchAllCategories.rejected, (state, action) => {
       state.loading = "failed";
-      state.error = action.payload.error;
+      state.error =
+        action.payload && action.payload.error
+          ? action.payload.error
+          : "Unknown error";
     });
 
     // Handle createCategory
@@ -124,7 +126,10 @@ const categorySlice = createSlice({
     });
     builder.addCase(createCategory.rejected, (state, action) => {
       state.loading = "failed";
-      state.error = action.payload.error;
+      state.error =
+        action.payload && action.payload.error
+          ? action.payload.error
+          : "Unknown error";
     });
 
     // Handle updateCategory
@@ -143,7 +148,10 @@ const categorySlice = createSlice({
     });
     builder.addCase(updateCategory.rejected, (state, action) => {
       state.loading = "failed";
-      state.error = action.payload.error;
+      state.error =
+        action.payload && action.payload.error
+          ? action.payload.error
+          : "Unknown error";
     });
 
     // Handle deleteCategory
@@ -159,10 +167,12 @@ const categorySlice = createSlice({
     });
     builder.addCase(deleteCategory.rejected, (state, action) => {
       state.loading = "failed";
-      state.error = action.payload.error;
+      state.error =
+        action.payload && action.payload.error
+          ? action.payload.error
+          : "Unknown error";
     });
   },
 });
 
-export const { categoryDeleted } = categorySlice.actions;
 export default categorySlice.reducer;

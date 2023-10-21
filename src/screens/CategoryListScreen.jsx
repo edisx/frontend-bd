@@ -1,122 +1,96 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
+import { useSelector, useDispatch } from "react-redux";
+
 import {
   fetchAllCategories,
   createCategory,
-  updateCategory,
   deleteCategory,
+  updateCategory,
 } from "../features/categorySlice";
+import { useState, useEffect } from "react";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const CategoryListScreen = () => {
   const dispatch = useDispatch();
   const categoryAll = useSelector((state) => state.categories);
-
   const { categories, loading, error } = categoryAll;
-  const [showAddCategory, setShowAddCategory] = useState(false);
-  const [showEditCategory, setShowEditCategory] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-
-  const handleAddCategory = () => {
-    setShowAddCategory(true);
-  };
-
-  const handleEditCategory = (category) => {
-    setShowEditCategory(true);
-    setCategoryName(category.name);
-    setCategoryId(category.id);
-  };
-
-  const handleDeleteCategory = (categoryId) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-      dispatch(deleteCategory(categoryId));
-    }
-  };
-
-  const handleSaveCategory = () => {
-    if (categoryName.trim() !== "") {
-      if (showAddCategory) {
-        dispatch(createCategory({ name: categoryName }));
-      } else if (showEditCategory) {
-        dispatch(
-          updateCategory({ id: categoryId, category: { name: categoryName } })
-        );
-      }
-      setShowAddCategory(false);
-      setShowEditCategory(false);
-      setCategoryName("");
-      setCategoryId("");
-    }
-  };
 
   useEffect(() => {
+    // sleep 1 second
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
   if (loading === "loading") return <Loader />;
   if (error) return <Message variant="danger">{error}</Message>;
 
+  const handleEditClick = (id) => {
+    const currentCategoryName = categories.find((cat) => cat.id === id).name;
+
+    const newCategoryName = window.prompt(
+      "Edit category name:",
+      currentCategoryName
+    );
+
+    if (newCategoryName && newCategoryName !== currentCategoryName) {
+      dispatch(updateCategory({ id: id, category: { name: newCategoryName } }));
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (confirmDelete) {
+      dispatch(deleteCategory(id));
+    }
+  };
+
+  const handleCreateClick = () => {
+    const newCategoryName = window.prompt("Enter new category name:");
+
+    if (newCategoryName) {
+      dispatch(createCategory({ name: newCategoryName }));
+    }
+  };
+
   return (
-    <div className="flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Categories</h1>
+    <div className="p-4">
+      <div className="mb-4">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleAddCategory}
+          onClick={handleCreateClick}
         >
-          Add Category
+          Create Category
         </button>
       </div>
-      <table className="table-auto">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">ID</th>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((category) => (
-            <tr key={category.id}>
-              <td className="border px-4 py-2">{category.id}</td>
-              <td className="border px-4 py-2">{category.name}</td>
-              <td className="border px-4 py-2">
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
-                  onClick={() => handleEditCategory(category)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={() => handleDeleteCategory(category.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {(showAddCategory || showEditCategory) && (
-        <div className="flex flex-col mt-4">
-          <input
-            type="text"
-            placeholder="Category Name"
-            className="border rounded py-2 px-3 mb-2"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-          />
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleSaveCategory}
-          >
-            Save
-          </button>
+      <div className="grid grid-cols-4 gap-4 font-semibold border-b-2">
+        <div>ID</div>
+        <div>Category</div>
+        <div>Date Created</div>
+        <div>Actions</div>
+      </div>
+      {categories.map((category) => (
+        <div key={category.id} className="grid grid-cols-4 gap-4 py-2 border-b">
+          <div>{category.id}</div>
+          <div>{category.name}</div>
+          <div>{category.created_at.substring(0, 10)}</div>
+          <div>
+            <button
+              className="mr-2 bg-blue-500 text-white py-1 px-2 rounded"
+              onClick={() => handleEditClick(category.id)}
+            >
+              Edit
+            </button>
+
+            <button
+              className="bg-red-500 text-white py-1 px-2 rounded"
+              onClick={() => handleDeleteClick(category.id)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };
