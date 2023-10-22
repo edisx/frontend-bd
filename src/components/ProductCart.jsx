@@ -16,7 +16,7 @@ const ProductCart = ({ product }) => {
       addToCart({
         product: id,
         name: product.name,
-        image: product.image,
+        image: product.images[0]?.image || "/placeholder.png",
         price: product.price,
         countInStock: product.countInStock,
         qty,
@@ -34,7 +34,7 @@ const ProductCart = ({ product }) => {
           onChange={(e) => setQty(e.target.value)} 
           className="border rounded p-1"
         >
-          {[...Array(product.countInStock).keys()].map(x => 
+          {[...Array(product.count_in_stock).keys()].map(x => 
             <option key={x + 1} value={x + 1}>
               {x + 1}
             </option>
