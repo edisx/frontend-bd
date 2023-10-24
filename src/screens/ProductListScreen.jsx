@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllProductsForAdmin,
   deleteProduct,
+  createProduct
 } from "../features/productSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -31,11 +32,23 @@ const ProductListScreen = () => {
     }
   };
 
+  const handleCreateClick = () => {
+    dispatch(createProduct());
+  };
+
   if (loading === "loading") return <Loader />;
   if (error) return <Message variant="danger">{error}</Message>;
 
   return (
     <div className="m-4">
+      <div className="mb-4">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleCreateClick}
+        >
+          Create Product
+        </button>
+      </div>
       <div className="grid grid-cols-7 gap-4 font-semibold border-b-2">
         <div>ID</div>
         <div>Photo</div>
