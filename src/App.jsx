@@ -12,7 +12,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import ProductListScreen from "./screens/ProductListScreen";
 import UserListScreen from "./screens/UserListScreen";
 import UserEditScreen from "./screens/UserEditScreen";
-import ProductEditScreen from "./screens/ProductEditScreen";
+import ProductEditScreen from "./screens/ProductEditScreen/ProductEditScreen";
 import CategoryListScreen from "./screens/CategoryListScreen";
 
 const App = () => {
@@ -20,7 +20,8 @@ const App = () => {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header />
-        <div className="flex-grow p-4">
+        {/* TODO: return p-4 */}
+        <div className="flex-grow"> 
           {/* all the routes */}
           <Routes>
             <Route path="/" element={<HomeScreen />} exact />
