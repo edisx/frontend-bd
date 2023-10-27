@@ -20,8 +20,7 @@ const App = () => {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header />
-        {/* TODO: return p-4 */}
-        <div className="flex-grow"> 
+        <div className="flex-grow p-4"> 
           {/* all the routes */}
           <Routes>
             <Route path="/" element={<HomeScreen />} exact />

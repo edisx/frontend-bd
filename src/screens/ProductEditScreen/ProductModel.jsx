@@ -2,6 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { uploadModel, deleteModel } from "../../features/modelSlice";
 import { fetchSingleProductForAdmin } from "../../features/productSlice";
+import { Suspense } from "react";
+import Scene from "../../components/Scene";
+import MeshTree from "./MeshTree";
 
 const ProductModel = () => {
   const { id } = useParams();
@@ -48,10 +51,15 @@ const ProductModel = () => {
     <>
       <div className="flex flex-row">
         {/* left side */}
-        <div className="w-1/2 bg-green-500">
-          <div>
-            <form onSubmit={handleMeshSubmit} className="flex flex-col">
-              <label htmlFor="mesh">Select a 3D model file:</label>
+        <div className="w-1/2 p-4">
+          <div className="mb-4">
+            <form
+              onSubmit={handleMeshSubmit}
+              className="flex flex-col space-y-2"
+            >
+              <label htmlFor="mesh" className="font-medium text-lg">
+                Select a 3D model file:
+              </label>
               <input type="file" id="mesh" accept=".glb" required />
               <button
                 type="submit"
@@ -60,28 +68,32 @@ const ProductModel = () => {
                 Upload
               </button>
             </form>
+          </div>
+          <div className="mb-4">
             <button
               onClick={() => handleModelDelete(product.id)}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 w-32 rounded"
             >
-                Delete
+              Delete
             </button>
           </div>
           <div>
-            {product.meshes && product.meshes.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-medium mb-4">Meshes</h2>
-                <ul>
-                  {product.meshes.map((mesh) => (
-                    <li key={mesh.id}>{mesh.name}</li>
-                  ))}
-                </ul>
-              </div>
+            {product.meshes && product.meshes.length > 0 ? (
+              <MeshTree meshes={product.meshes} />
+            ) : (
+              <p>No model</p>
             )}
           </div>
         </div>
+
         {/* right side */}
-        <div className="w-1/2 bg-blue-500">model</div>
+        <div className="w-1/2">
+          <Suspense fallback={<div>Loading...</div>}>
+            <div className="w-96 h-96 p-4">
+              <Scene model={product.model_3d} />
+            </div>
+          </Suspense>
+        </div>
       </div>
     </>
   );

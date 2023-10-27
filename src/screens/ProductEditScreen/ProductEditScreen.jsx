@@ -8,18 +8,18 @@ const ProductEditScreen = () => {
 
   return (
     <>
-      {/* <span
+      <span
         className="text-blue-500 hover:underline cursor-pointer"
         onClick={() => navigate("/admin/productlist")}
       >
         Go Back
-      </span> */}
+      </span>
 
       <div className="flex flex-row">
-        <div className="w-1/2 bg-red-500">
+        <div className="w-1/2 p-4">
           <ProductText />
         </div>
-        <div className="w-1/2 bg-yellow-500">
+        <div className="w-1/2 p-4">
           <ProductImages />
         </div>
       </div>
