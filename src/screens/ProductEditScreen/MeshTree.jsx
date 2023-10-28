@@ -19,7 +19,6 @@ const MeshTree = (props) => {
   const [hexCode, setHexCode] = useState("#000000");
   const [isEditMode, setEditMode] = useState(false);
   const [selectedColorId, setSelectedColorId] = useState(null);
-  
 
   const colorInputRef = useRef(null);
 
@@ -46,7 +45,6 @@ const MeshTree = (props) => {
     setModalOpen(false);
     setColorName("");
     setHexCode("#000000");
-
   };
 
   const handleSubmit = async (e) => {
@@ -56,19 +54,41 @@ const MeshTree = (props) => {
       hex_code: hexCode,
     };
     if (isEditMode) {
-      dispatch(updateColor({ pk: selectedColorId, colorData }));
+      dispatch(updateColor({ pk: selectedColorId, colorData }))
+        .unwrap()
+        .then((response) => {
+          console.log("Color updated", response);
+          dispatch(fetchSingleProductForAdmin(id));
+        })
+        .catch((error) => {
+          console.error("Update color failed", error);
+        });
     } else {
-      dispatch(addColorToMesh({ mesh_id: selectedMesh.id, ...colorData }));
+      dispatch(addColorToMesh({ mesh_id: selectedMesh.id, ...colorData }))
+        .unwrap()
+        .then((response) => {
+          console.log("Color added", response);
+          dispatch(fetchSingleProductForAdmin(id));
+        })
+        .catch((error) => {
+          console.error("Add color failed", error);
+        });
     }
-    dispatch(fetchSingleProductForAdmin(id));
     setColorName("");
     setHexCode("#000000");
     handleCloseModal();
   };
 
   const handleDelete = () => {
-    dispatch(deleteColor(selectedColorId));
-    dispatch(fetchSingleProductForAdmin(id));
+    dispatch(deleteColor(selectedColorId))
+      .unwrap()
+      .then((response) => {
+        console.log("Color deleted", response);
+        dispatch(fetchSingleProductForAdmin(id));
+      })
+      .catch((error) => {
+        console.error("Delete color failed", error);
+      });
     handleCloseModal();
   };
 

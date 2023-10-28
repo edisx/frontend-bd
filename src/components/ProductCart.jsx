@@ -43,10 +43,11 @@ const ProductCart = ({ product }) => {
       </div>
       <button 
         onClick={addToCartHandler} 
-        className="mt-4 bg-green-500 text-white p-2 rounded"
+        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300 m-4"
       >
         Add to Cart
       </button>
+      
     </div>
   );
 };

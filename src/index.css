@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 /* header */
-.active {
+/* .active {
   @apply bg-gray-100;
-}
+} */
