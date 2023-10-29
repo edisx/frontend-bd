@@ -3,23 +3,28 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
+import { v4 as uuidv4 } from 'uuid';
 
-const ProductCart = ({ product }) => {
+const ProductCart = ({ product, selectedSize }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [qty, setQty] = useState(1);
-
   const addToCartHandler = () => {
+    if (!selectedSize) {
+      alert("Please select a size before adding to cart.");  // using alert as a quick feedback, but you might want a more user-friendly way to notify
+      return;
+    }
+    const uniqueId = uuidv4();
     dispatch(
       addToCart({
         product: id,
+        size: selectedSize,
         name: product.name,
         image: product.images[0]?.image || "/placeholder.png",
         price: product.price,
         countInStock: product.countInStock,
-        qty,
+        uniqueId,
       })
     );
     navigate("/cart");
@@ -27,27 +32,12 @@ const ProductCart = ({ product }) => {
 
   return (
     <div className="mt-4">
-      <div>
-        <label className="mr-2" htmlFor="qty">Quantity:</label>
-        <select 
-          value={qty} 
-          onChange={(e) => setQty(e.target.value)} 
-          className="border rounded p-1"
-        >
-          {[...Array(product.count_in_stock).keys()].map(x => 
-            <option key={x + 1} value={x + 1}>
-              {x + 1}
-            </option>
-          )}
-        </select>
-      </div>
       <button 
         onClick={addToCartHandler} 
         className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300 m-4"
       >
         Add to Cart
       </button>
-      
     </div>
   );
 };

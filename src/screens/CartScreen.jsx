@@ -7,8 +7,8 @@ const CartScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleRemoveFromCart = (id) => {
-    dispatch(removeFromCart(id));
+  const handleRemoveFromCart = (id, size) => {
+    dispatch(removeFromCart({ id, size })); // Pass both id and size to the action
   };
 
   const total = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2);
@@ -24,14 +24,15 @@ const CartScreen = () => {
         ) : (
           <ul>
             {cartItems.map((item) => (
-              <li key={item.product} className="border-b py-2 flex justify-between items-center">
+              <li key={`${item.product}-${item.size}-${item.uniqueId}`} className="border-b py-2 flex justify-between items-center">
                 <div className="flex items-center">
                   <img src={item.image} alt={item.name} className="w-16 h-16 mr-4 rounded" />
                   <span className="mr-4">{item.name}</span>
-                  <span>{item.qty} x ${item.price}</span>
+                  <span>Size: {item.size.size}</span>
+                  <span className="ml-4">{item.qty} x ${item.price}</span>
                 </div>
                 <button 
-                  onClick={() => handleRemoveFromCart(item.product)} 
+                  onClick={() => handleRemoveFromCart(item.product, item.size)} // Pass both id and size to the handler
                   className="text-red-500 hover:underline"
                 >
                   Remove

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchAllCategories } from "../../features/categorySlice";
+import { getSizes, updateProductSizes } from "../../features/sizeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
@@ -15,7 +16,6 @@ const ProductText = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [categoryName, setCategoryName] = useState("");
@@ -23,6 +23,8 @@ const ProductText = () => {
   const [price, setPrice] = useState(0);
   const [countInStock, setCountInStock] = useState(0);
   const [visible, setVisible] = useState(false);
+
+  const [selectedSizes, setSelectedSizes] = useState([]);
 
   const productsAll = useSelector((state) => state.products);
   const { product, loading, error } = productsAll;
@@ -34,9 +36,13 @@ const ProductText = () => {
     error: errorCategories,
   } = categoriesAll;
 
+  const sizesAll = useSelector((state) => state.sizes);
+  const { sizes, loading: loadingSizes, error: errorSizes } = sizesAll;
+
   useEffect(() => {
     dispatch(fetchSingleProductForAdmin(id));
     dispatch(fetchAllCategories());
+    dispatch(getSizes());
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -48,6 +54,12 @@ const ProductText = () => {
       setPrice(product.price || 0);
       setCountInStock(product.count_in_stock || 0);
       setVisible(product.visible || false);
+
+      if (product && product.sizes) {
+        setSelectedSizes(product.sizes.map((size) => size.id));
+      } else {
+        setSelectedSizes([]);
+      }
     }
   }, [product]);
 
@@ -68,10 +80,15 @@ const ProductText = () => {
     )
       .unwrap()
       .then((response) => {
+        return dispatch(
+          updateProductSizes({ product_id: id, size_ids: selectedSizes })
+        );
+      })
+      .then(() => {
         navigate("/admin/productlist");
       })
       .catch((error) => {
-        console.error("Update product failed", error);
+        console.error("Update failed", error);
       });
   };
 
@@ -130,6 +147,41 @@ const ProductText = () => {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* sizes */}
+        <div className="mb-4">
+          <label htmlFor="sizes" className="block mb-2">
+            Sizes
+          </label>
+          <div className="flex flex-wrap gap-4">
+            {" "}
+            {/* This will wrap sizes to the next row if they exceed container's width */}
+            {sizes.map((size) => (
+              <div key={size.id} className="flex items-center gap-2">
+                {" "}
+                {/* This will align checkbox and label vertically center */}
+                <input
+                  type="checkbox"
+                  id={`size-${size.id}`}
+                  value={size.id}
+                  checked={selectedSizes.includes(size.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedSizes((prev) => [...prev, size.id]);
+                    } else {
+                      setSelectedSizes((prev) =>
+                        prev.filter((s) => s !== size.id)
+                      );
+                    }
+                  }}
+                />
+                <label htmlFor={`size-${size.id}`} className="ml-2">
+                  {size.size}
+                </label>{" "}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* price */}

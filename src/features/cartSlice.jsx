@@ -20,19 +20,25 @@ const cartSlice = createSlice({
     // cart
     addToCart: (state, action) => {
       const item = action.payload;
-      const existItem = state.cartItems.find((x) => x.product === item.product);
+      const existItem = state.cartItems.find(
+        (x) => x.product === item.product && x.size === item.size
+      );
 
       if (existItem) {
+        // You can increment the quantity here if desired or replace the existing item
         state.cartItems = state.cartItems.map((x) =>
-          x.product === existItem.product ? item : x
+          x.product === existItem.product && x.size === existItem.size
+            ? { ...item, qty: existItem.qty + 1 }
+            : x
         );
       } else {
-        state.cartItems.push(item);
+        state.cartItems.push({ ...item, qty: 1 }); // Every time a new item is added, qty will be 1
       }
     },
     removeFromCart: (state, action) => {
+      const { id, size } = action.payload;
       state.cartItems = state.cartItems.filter(
-        (x) => x.product !== action.payload
+        (x) => x.product !== id || x.size !== size
       );
     },
     // shipping

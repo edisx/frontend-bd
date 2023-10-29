@@ -14,6 +14,8 @@ const ProductScreen = () => {
 
   const [currentImage, setCurrentImage] = useState(null);
 
+  const [selectedSize, setSelectedSize] = useState(null);
+
   useEffect(() => {
     dispatch(fetchSingleProduct(id));
   }, [dispatch, id]);
@@ -44,8 +46,8 @@ const ProductScreen = () => {
                 key={image.id}
                 src={image.image}
                 alt={product.name}
-                onClick={() => setCurrentImage(image.image)} // On click, change the currentImage
-                className="w-24 h-24 object-cover rounded-md shadow-md cursor-pointer" // Add cursor-pointer for better UX
+                onClick={() => setCurrentImage(image.image)}
+                className="w-24 h-24 object-cover rounded-md shadow-md cursor-pointer"
               />
             ))}
           </div>
@@ -60,13 +62,32 @@ const ProductScreen = () => {
           <p className="mb-6 text-gray-600 leading-relaxed">
             {product.description}
           </p>
-          <p className="mb-6">
-            <span className="font-medium text-black">Stock:</span>
-            {product.count_in_stock > 0
-              ? ` ${product.count_in_stock} in stock`
-              : " Out of stock"}
-          </p>
-          {product.count_in_stock > 0 && <ProductCart product={product} />}
+          {product.count_in_stock > 0 && (
+            <>
+              <div className="mb-6">
+                <label
+                  htmlFor="size"
+                  className="block font-medium text-black mb-2"
+                >
+                  Select Size:
+                </label>
+                <select
+                  id="size"
+                  value={selectedSize ? JSON.stringify(selectedSize) : ""}
+                  onChange={(e) => setSelectedSize(JSON.parse(e.target.value))}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Choose a size</option>
+                  {product.sizes?.map((size) => (
+                    <option key={size.id} value={JSON.stringify(size)}>
+                      {size.size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <ProductCart product={product} selectedSize={selectedSize} />
+            </>
+          )}
         </div>
       </div>
     </div>
