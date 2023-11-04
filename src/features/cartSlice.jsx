@@ -36,9 +36,9 @@ const cartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-      const { id, size } = action.payload;
+      const uniqueId = action.payload; // Payload is the uniqueId
       state.cartItems = state.cartItems.filter(
-        (x) => x.product !== id || x.size !== size
+        (item) => item.uniqueId !== uniqueId
       );
     },
     // shipping

@@ -5,6 +5,7 @@ import cartReducer from "./features/cartSlice";
 import userReducer from "./features/userSlice";
 import categoryReducer from "./features/categorySlice";
 import sizeReducer from "./features/sizeSlice";
+import colorReducer from "./features/colorSlice";
 
 
 
@@ -17,6 +18,7 @@ const store = configureStore({
     user: userReducer,
     categories: categoryReducer,
     sizes: sizeReducer,
+    colors: colorReducer,
 
 
 
@@ -26,6 +28,7 @@ const store = configureStore({
 
 store.subscribe(() => {
   localStorage.setItem("cart", JSON.stringify(store.getState().cart));
+  localStorage.setItem("colors", JSON.stringify(store.getState().colors));
 });
 
 export default store;

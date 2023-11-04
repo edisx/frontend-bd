@@ -12,7 +12,7 @@ const ProductCart = ({ product, selectedSize }) => {
 
   const addToCartHandler = () => {
     if (!selectedSize) {
-      alert("Please select a size before adding to cart.");  // using alert as a quick feedback, but you might want a more user-friendly way to notify
+      alert("Please select a size before adding to cart."); 
       return;
     }
     const uniqueId = uuidv4();
@@ -34,7 +34,7 @@ const ProductCart = ({ product, selectedSize }) => {
     <div className="mt-4">
       <button 
         onClick={addToCartHandler} 
-        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300 m-4"
+        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300"
       >
         Add to Cart
       </button>

@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { uploadModel, deleteModel } from "../../features/modelSlice";
 import { fetchSingleProductForAdmin } from "../../features/productSlice";
 import { Suspense } from "react";
-import Scene from "../../components/Scene";
 import MeshTree from "./MeshTree";
+import Scene from "../CustomizeScreen/Scene";
 
 const ProductModel = () => {
   const { id } = useParams();

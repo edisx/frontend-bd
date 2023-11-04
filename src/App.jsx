@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -14,30 +19,44 @@ import UserListScreen from "./screens/UserListScreen";
 import UserEditScreen from "./screens/UserEditScreen";
 import ProductEditScreen from "./screens/ProductEditScreen/ProductEditScreen";
 import CategoryListScreen from "./screens/CategoryListScreen";
+import CustomizeScreen from "./screens/CustomizeScreen/CustomizeScreen";
+
+const Layout = () => {
+  const location = useLocation();
+  const showHeaderFooter = !location.pathname.includes("/customize");
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {showHeaderFooter && <Header />}
+      <div className={showHeaderFooter ? "flex-grow p-4" : "flex-grow"}>
+        {/* all the routes */}
+        <Routes>
+          <Route path="/" element={<HomeScreen />} exact />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/cart" element={<CartScreen />} />
+          <Route path="/product/:id" element={<ProductScreen />} />
+          <Route path="/product/customize/:id" element={<CustomizeScreen />} />
+          <Route path="/register" element={<RegisterScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/admin/productlist" element={<ProductListScreen />} />
+          <Route
+            path="/admin/product/:id/edit"
+            element={<ProductEditScreen />}
+          />
+          <Route path="/admin/userlist" element={<UserListScreen />} />
+          <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
+          <Route path="/admin/categorylist" element={<CategoryListScreen />} />
+        </Routes>
+      </div>
+      {showHeaderFooter && <Footer />}
+    </div>
+  );
+};
 
 const App = () => {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <div className="flex-grow p-4"> 
-          {/* all the routes */}
-          <Routes>
-            <Route path="/" element={<HomeScreen />} exact />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/cart" element={<CartScreen />} />
-            <Route path="/product/:id" element={<ProductScreen />} />
-            <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-            <Route path="/admin/productlist" element={<ProductListScreen />} />
-            <Route path="/admin/product/:id/edit" element={<ProductEditScreen />} />
-            <Route path="/admin/userlist" element={<UserListScreen />} />
-            <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
-            <Route path="/admin/categorylist" element={<CategoryListScreen />} />
-          </Routes>
-        </div>
-        <Footer />
-      </div>
+      <Layout />
     </Router>
   );
 };

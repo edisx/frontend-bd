@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchSingleProduct } from "../features/productSlice";
+import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import ProductCart from "../components/ProductCart";
@@ -11,6 +12,7 @@ const ProductScreen = () => {
   const dispatch = useDispatch();
   const productSingle = useSelector((state) => state.products);
   const { product, loading, error } = productSingle;
+  const navigate = useNavigate();
 
   const [currentImage, setCurrentImage] = useState(null);
 
@@ -40,6 +42,7 @@ const ProductScreen = () => {
               className="absolute top-0 left-0 right-0 bottom-0 m-auto object-cover w-96 h-96 rounded-lg shadow-md"
             />
           </div>
+
           <div className="mt-8 flex space-x-4 overflow-x-auto">
             {product.images?.map((image) => (
               <img
@@ -54,6 +57,16 @@ const ProductScreen = () => {
         </div>
         <div>
           <h1 className="text-3xl font-medium mb-6">{product.name}</h1>
+          {product.model_3d && (
+            <div className="m-4">
+              <button
+                onClick={() => navigate(`/product/customize/${id}`)}
+                className="rainbow-bg text-white px-8 py-2 rounded-lg border-2 border-white shadow-lg transition-transform duration-150 ease-in-out hover:scale-105"
+              >
+                <span className="text-white font-medium">Customize</span>
+              </button>
+            </div>
+          )}
           <p className="mb-4 text-gray-700">
             <span className="text-black font-semibold">Category: </span>
             {product.category?.name || "No category"}
@@ -85,6 +98,7 @@ const ProductScreen = () => {
                   ))}
                 </select>
               </div>
+
               <ProductCart product={product} selectedSize={selectedSize} />
             </>
           )}
