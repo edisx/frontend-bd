@@ -7,8 +7,7 @@ try {
   console.error("Error parsing colors from localStorage", error);
 }
 
-const defaultState = {};
-
+const defaultState = [];
 
 const colorSlice = createSlice({
   name: "color",
@@ -16,18 +15,25 @@ const colorSlice = createSlice({
   reducers: {
     setColor: (state, action) => {
       const { meshId, color } = action.payload;
-      // Set the color for the mesh, identified by meshId
-      state[meshId] = color;
+      // Find the index of the color entry with the same meshId, if it exists
+      const index = state.findIndex((entry) => entry.meshId === meshId);
+
+      if (index !== -1) {
+        // If the entry exists, update its color
+        state[index].color = color;
+      } else {
+        // If the entry does not exist, add a new entry
+        state.push({ meshId, color });
+      }
+
       // Persist the updated state to local storage
-      localStorage.setItem("productColors", JSON.stringify(state));
+      localStorage.setItem("colors", JSON.stringify(state));
     },
     resetColors: (state) => {
-      // Reset all colors
-      Object.keys(state).forEach((key) => {
-        delete state[key];
-      });
+      // Reset the colors array to an empty array
+      state.splice(0, state.length);
       // Remove the item from local storage
-      localStorage.removeItem("productColors");
+      localStorage.removeItem("colors");
     },
     // You can add more reducers for different functionalities
   },

@@ -1,14 +1,11 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { useGLTF } from "@react-three/drei";
-import { MeshStandardMaterial } from "three";
-import { useSelector } from "react-redux";
 
 const USE_PROXY = import.meta.env.VITE_PROXY === "False";
 const API_URL = USE_PROXY ? import.meta.env.VITE_API_URL : "";
 
-const Scene = (props) => {
-  const colors = useSelector((state) => state.colors);
+const Viewer = (props) => {
 
   if (!props.model) {
     return <h1>NO MODEL</h1>;
@@ -17,27 +14,6 @@ const Scene = (props) => {
 
   const { scene } = useGLTF(modelURL);
 
-  // colors in colors
-  // meshes in props.meshes
-
-  scene.traverse((child) => {
-    if (child.isMesh) {
-      const mesh_name = child.name;
-      const mesh_id = props.meshes.find((mesh) => mesh.name === mesh_name)?.id;
-
-      if (mesh_id !== undefined) {
-        const colorEntry = colors.find((color) => color.meshId === mesh_id);
-
-        if (colorEntry) {
-          const color = colorEntry.color.hex_code;
-
-          child.material = new MeshStandardMaterial({
-            color: color,
-          });
-        }
-      }
-    }
-  });
 
   return (
     <Canvas camera={{ position: [0.5, 0, 4], fov: 45 }}>
@@ -61,4 +37,4 @@ const Scene = (props) => {
   );
 };
 
-export default Scene;
+export default Viewer;

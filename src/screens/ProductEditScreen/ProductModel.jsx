@@ -4,7 +4,7 @@ import { uploadModel, deleteModel } from "../../features/modelSlice";
 import { fetchSingleProductForAdmin } from "../../features/productSlice";
 import { Suspense } from "react";
 import MeshTree from "./MeshTree";
-import Scene from "../CustomizeScreen/Scene";
+import Viewer from "../../components/Viewer";
 
 const ProductModel = () => {
   const { id } = useParams();
@@ -90,7 +90,7 @@ const ProductModel = () => {
         <div className="w-1/2">
           <Suspense fallback={<div>Loading...</div>}>
             <div className="w-96 h-96 p-4">
-              <Scene model={product.model_3d} />
+              <Viewer model={product.model_3d} />
             </div>
           </Suspense>
         </div>
