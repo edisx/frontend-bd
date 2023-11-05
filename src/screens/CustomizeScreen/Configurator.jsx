@@ -1,67 +1,95 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setColor } from "../../features/colorSlice";
+import { ChevronLeft, ChevronRight } from "react-feather";
 
 const Configurator = () => {
   const dispatch = useDispatch();
-  // Getting the meshes from the Redux state
-  const meshes = useSelector((state) => state.products.product.meshes);
+  const meshes = useSelector((state) => state.products.product.meshes) || [];
 
-  // State to hold the selected mesh
+  const colors = useSelector((state) => state.colors);
   const [selectedMesh, setSelectedMesh] = useState(null);
-
-  // State to hold the selected color for the mesh
   const [selectedColor, setSelectedColor] = useState(null);
 
-  // Effect to set the default selected mesh when meshes are loaded
   useEffect(() => {
     if (meshes && meshes.length > 0) {
       setSelectedMesh(meshes[0]);
     }
   }, [meshes]);
 
-  return (
-    <div className="w-screen relative">
-      {/* List of mesh names */}
-      {meshes && (
-        <div>
-          {meshes.map((mesh) => (
-            <button
-              key={mesh.id}
-              onClick={() => setSelectedMesh(mesh)}
-              style={{
-                backgroundColor: selectedMesh?.id === mesh.id ? "#ddd" : "",
-              }}
-            >
-              {mesh.name}
-            </button>
-          ))}
-        </div>
-      )}
+  // Helper function to navigate between meshes
+  const navigateMeshes = (direction) => {
+    if (!meshes || meshes.length === 0 || !selectedMesh) return;
+    const currentIndex = meshes.findIndex(
+      (mesh) => mesh.id === selectedMesh.id
+    );
+    if (currentIndex === -1) return; // If selectedMesh is not in meshes, exit
+    const nextIndex =
+      (currentIndex + direction + meshes.length) % meshes.length;
+    setSelectedMesh(meshes[nextIndex]);
+  };
 
-      {/* List of colors for the selected mesh */}
-      {selectedMesh && (
-        <div>
-          {selectedMesh.colors.map((color) => (
-            <button
-              key={color.id}
+  const isColorSelected = (color) => {
+    // Check if this color is in the selected colors state
+    return colors.some(
+      (selectedColor) =>
+        selectedColor.meshId === selectedMesh.id &&
+        selectedColor.color.id === color.id
+    );
+  };
+
+  const selectedMeshIndex = selectedMesh
+    ? meshes.findIndex((mesh) => mesh.id === selectedMesh.id)
+    : -1;
+
+  const totalMeshes = meshes.length;
+
+  return (
+    <div className="w-screen">
+      {/* upper */}
+      <div className="flex justify-center items-center p-4">
+        <button onClick={() => navigateMeshes(-1)}>
+          {/* Replace with left arrow icon */}
+          <ChevronLeft />
+        </button>
+        <div className="flex justify-center items-center min-w-[200px]">
+          <span>{selectedMesh?.name}</span>
+          <span className="mx-2"></span>
+          {/* Dynamic text for mesh count */}
+          <span>
+            {selectedMeshIndex !== -1
+              ? `${selectedMeshIndex + 1}/${totalMeshes}`
+              : ""}
+          </span>
+        </div>
+        <button onClick={() => navigateMeshes(1)}>
+          {/* Replace with right arrow icon */}
+          <ChevronRight />
+        </button>
+      </div>
+      {/* lower */}
+      <div className="flex justify-center space-x-4 p-4">
+        {selectedMesh?.colors.map((color) => (
+          <div key={color.id} className="text-center">
+            <div
               onClick={() => {
                 setSelectedColor(color);
-                // Dispatch the setColor action with the mesh ID and selected color
                 dispatch(setColor({ meshId: selectedMesh.id, color: color }));
               }}
-              style={{ backgroundColor: color.hex_code }}
+              className={`w-20 h-20 rounded-full ${
+                isColorSelected(color) ? "bg-gray-200" : "bg-transparent"
+              } flex items-center justify-center`}
             >
-              {color.color_name}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Display the selected mesh and color */}
-      <div>
-        <p>Selected Mesh: {selectedMesh?.name}</p>
-        <p>Selected Color: {selectedColor?.color_name}</p>
+              <div
+                className={`w-16 h-16 rounded-full ${
+                  isColorSelected(color) ? "border-2 border-white" : ""
+                }`}
+                style={{ backgroundColor: color.hex_code }}
+              ></div>
+            </div>
+            <div className="mt-2">{color.color_name}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

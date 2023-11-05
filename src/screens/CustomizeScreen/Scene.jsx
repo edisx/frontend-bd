@@ -17,8 +17,6 @@ const Scene = (props) => {
 
   const { scene } = useGLTF(modelURL);
 
-  // colors in colors
-  // meshes in props.meshes
 
   scene.traverse((child) => {
     if (child.isMesh) {
