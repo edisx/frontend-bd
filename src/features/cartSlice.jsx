@@ -13,6 +13,7 @@ const defaultState = {
   paymentMethod: "",
 };
 
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: savedCart ? savedCart : defaultState,

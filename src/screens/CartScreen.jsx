@@ -11,6 +11,16 @@ const CartScreen = () => {
     dispatch(removeFromCart(uniqueId));
   };
 
+  const getColorMappingString = (colors) => {
+    const mappingString = colors.map(colorObj => {
+      const [meshName, colorName] = Object.entries(colorObj)[0];
+      return `${meshName}: ${colorName}`;
+    }).join(', ');
+
+    // Trim the string to a maximum of 20 characters
+    return mappingString.length > 20 ? `${mappingString.substring(0, 100)}...` : mappingString;
+  };
+
   const total = cartItems
     .reduce((acc, item) => acc + item.price * item.qty, 0)
     .toFixed(2);
@@ -38,12 +48,16 @@ const CartScreen = () => {
                   />
                   <span className="mr-4">{item.name}</span>
                   <span>Size: {item.size.size}</span>
+                  {/* Only display color mapping if item.colors is not empty */}
+                  {item.colors && item.colors.length > 0 && (
+                    <span className="ml-4">Colors: {getColorMappingString(item.colors)}</span>
+                  )}
                   <span className="ml-4">
                     {item.qty} x ${item.price}
                   </span>
                 </div>
                 <button
-                  onClick={() => handleRemoveFromCart(item.uniqueId)} // Pass the uniqueId to the handler
+                  onClick={() => handleRemoveFromCart(item.uniqueId)}
                   className="text-red-500 hover:underline"
                 >
                   Remove
