@@ -20,7 +20,6 @@ const ProductImages = () => {
     dispatch(createImage(formData))
       .unwrap()
       .then((response) => {
-        console.log("Image created", response);
         dispatch(fetchSingleProductForAdmin(id));
       })
       .catch((error) => {
@@ -36,7 +35,6 @@ const ProductImages = () => {
       dispatch(deleteImage(imageId))
         .unwrap()
         .then((response) => {
-          console.log("Image deleted", response);
           dispatch(fetchSingleProductForAdmin(id));
         })
         .catch((error) => {

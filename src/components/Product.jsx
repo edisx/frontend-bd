@@ -28,7 +28,7 @@ const Product = (props) => {
         </h1>
 
         {/* Product Price */}
-        <h2 className="text-gray-700 text-base">${props.product.price}</h2>
+        <h2 className="text-gray-700 text-base">{props.product.price} €</h2>
       </div>
     </Link>
   );

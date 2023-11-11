@@ -57,7 +57,6 @@ const MeshTree = (props) => {
       dispatch(updateColor({ pk: selectedColorId, colorData }))
         .unwrap()
         .then((response) => {
-          console.log("Color updated", response);
           dispatch(fetchSingleProductForAdmin(id));
         })
         .catch((error) => {
@@ -67,7 +66,6 @@ const MeshTree = (props) => {
       dispatch(addColorToMesh({ mesh_id: selectedMesh.id, ...colorData }))
         .unwrap()
         .then((response) => {
-          console.log("Color added", response);
           dispatch(fetchSingleProductForAdmin(id));
         })
         .catch((error) => {
@@ -83,7 +81,6 @@ const MeshTree = (props) => {
     dispatch(deleteColor(selectedColorId))
       .unwrap()
       .then((response) => {
-        console.log("Color deleted", response);
         dispatch(fetchSingleProductForAdmin(id));
       })
       .catch((error) => {

@@ -22,7 +22,6 @@ const ProductModel = () => {
     dispatch(uploadModel(formData))
       .unwrap()
       .then((response) => {
-        console.log("Mesh uploaded", response);
         dispatch(fetchSingleProductForAdmin(id));
       })
       .catch((error) => {
@@ -38,7 +37,6 @@ const ProductModel = () => {
       dispatch(deleteModel(modelId))
         .unwrap()
         .then((response) => {
-          console.log("Model deleted", response);
           dispatch(fetchSingleProductForAdmin(id));
         })
         .catch((error) => {

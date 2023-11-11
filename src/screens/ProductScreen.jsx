@@ -71,7 +71,7 @@ const ProductScreen = () => {
             <span className="text-black font-semibold">Category: </span>
             {product.category?.name || "No category"}
           </p>
-          <p className="text-xl mb-6 font-medium">${product.price}</p>
+          <p className="text-xl mb-6 font-medium">{product.price} €</p>
           <p className="mb-6 text-gray-600 leading-relaxed">
             {product.description}
           </p>

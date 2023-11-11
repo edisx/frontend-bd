@@ -20,6 +20,9 @@ import UserEditScreen from "./screens/UserEditScreen";
 import ProductEditScreen from "./screens/ProductEditScreen/ProductEditScreen";
 import CategoryListScreen from "./screens/CategoryListScreen";
 import CustomizeScreen from "./screens/CustomizeScreen/CustomizeScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 
 const Layout = () => {
   const location = useLocation();
@@ -46,6 +49,9 @@ const Layout = () => {
           <Route path="/admin/userlist" element={<UserListScreen />} />
           <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
           <Route path="/admin/categorylist" element={<CategoryListScreen />} />
+          <Route path="/shipping" element={<ShippingScreen />} />
+          <Route path="/payment" element={<PaymentScreen />} />
+          <Route path="/placeorder" element={<PlaceOrderScreen />} />
         </Routes>
       </div>
       {showHeaderFooter && <Footer />}

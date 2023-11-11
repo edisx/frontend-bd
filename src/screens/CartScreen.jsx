@@ -12,13 +12,17 @@ const CartScreen = () => {
   };
 
   const getColorMappingString = (colors) => {
-    const mappingString = colors.map(colorObj => {
-      const [meshName, colorName] = Object.entries(colorObj)[0];
-      return `${meshName}: ${colorName}`;
-    }).join(', ');
+    const mappingString = colors
+      .map((colorObj) => {
+        const [meshName, colorName] = Object.entries(colorObj)[0];
+        return `${meshName}: ${colorName}`;
+      })
+      .join(", ");
 
     // Trim the string to a maximum of 20 characters
-    return mappingString.length > 20 ? `${mappingString.substring(0, 100)}...` : mappingString;
+    return mappingString.length > 20
+      ? `${mappingString.substring(0, 100)}...`
+      : mappingString;
   };
 
   const total = cartItems
@@ -50,11 +54,11 @@ const CartScreen = () => {
                   <span>Size: {item.size.size}</span>
                   {/* Only display color mapping if item.colors is not empty */}
                   {item.colors && item.colors.length > 0 && (
-                    <span className="ml-4">Colors: {getColorMappingString(item.colors)}</span>
+                    <span className="ml-4">
+                      Colors: {getColorMappingString(item.colors)}
+                    </span>
                   )}
-                  <span className="ml-4">
-                    {item.qty} x ${item.price}
-                  </span>
+                  <span className="ml-4">{item.price} €</span>
                 </div>
                 <button
                   onClick={() => handleRemoveFromCart(item.uniqueId)}
@@ -76,7 +80,7 @@ const CartScreen = () => {
           <span className="text-lg">${total}</span>
         </div>
         <button
-          onClick={() => navigate("/checkout")}
+          onClick={() => navigate("/shipping")}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
         >
           Proceed to Checkout

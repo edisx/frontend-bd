@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 const ProductCart = ({ product, selectedSize }) => {
   const colors = useSelector((state) => state.colors);
   const meshes = product.meshes;
-  console.log(colors);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
