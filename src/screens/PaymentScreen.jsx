@@ -41,11 +41,11 @@ const PaymentScreen = () => {
               className="mr-2"
             />
             <label htmlFor="PayPal" className="flex-1 cursor-pointer">
-              PayPal or Credit Card
+              PayPal
             </label>
           </div>
 
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <input
               type="radio"
               id="Stripe"
@@ -58,7 +58,7 @@ const PaymentScreen = () => {
             <label htmlFor="Stripe" className="flex-1 cursor-pointer">
               Stripe
             </label>
-          </div>
+          </div> */}
         </fieldset>
 
         <button

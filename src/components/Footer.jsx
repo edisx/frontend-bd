@@ -55,7 +55,7 @@ const StickyFooter = () => {
       <footer className="w-full h-auto md:h-16 flex flex-col md:flex-row items-center justify-between mt-4 md:mt-12 mb-4 md:mb-16 px-4 md:px-12">
         {/* div links */}
         <div className="flex flex-row justify-center items-center gap-2 md:gap-4 my-2 md:my-0">
-          {Object.keys(Links).map((key) => (
+          {/* {Object.keys(Links).map((key) => (
             <a
               href={Links[key]}
               key={key}
@@ -63,7 +63,7 @@ const StickyFooter = () => {
             >
               {key}
             </a>
-          ))}
+          ))} */}
         </div>
 
         {/* div company name */}
@@ -73,7 +73,7 @@ const StickyFooter = () => {
 
         {/* div socials */}
         <div className="flex flex-row justify-center items-center gap-4 md:gap-6 my-2 md:my-0">
-          {Object.keys(Socials).map((key) => (
+          {/* {Object.keys(Socials).map((key) => (
             <a
               href={Socials[key].link}
               key={key}
@@ -81,7 +81,7 @@ const StickyFooter = () => {
             >
               {Socials[key].logo}
             </a>
-          ))}
+          ))} */}
         </div>
       </footer>
     </div>

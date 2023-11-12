@@ -26,7 +26,7 @@ const CartScreen = () => {
   };
 
   const total = cartItems
-    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .reduce((acc, item) => acc + item.price * 1, 0)
     .toFixed(2);
 
   return (
@@ -81,6 +81,7 @@ const CartScreen = () => {
         </div>
         <button
           onClick={() => navigate("/shipping")}
+          disabled={cartItems.length === 0}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
         >
           Proceed to Checkout
