@@ -24,6 +24,7 @@ import ShippingScreen from "./screens/ShippingScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
+import OrderListScreen from "./screens/OrderListScreen";
 
 const Layout = () => {
   const location = useLocation();
@@ -54,6 +55,7 @@ const Layout = () => {
           <Route path="/payment" element={<PaymentScreen />} />
           <Route path="/placeorder" element={<PlaceOrderScreen />} />
           <Route path="/order/:id" element={<OrderScreen />} />
+          <Route path="/admin/orderlist" element={<OrderListScreen />} />
         </Routes>
       </div>
       {showHeaderFooter && <Footer />}

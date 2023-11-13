@@ -41,7 +41,7 @@ const PaymentScreen = () => {
               className="mr-2"
             />
             <label htmlFor="PayPal" className="flex-1 cursor-pointer">
-              PayPal
+              PayPal or Credit Card
             </label>
           </div>
 

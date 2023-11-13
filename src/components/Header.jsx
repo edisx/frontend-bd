@@ -74,6 +74,14 @@ const Header = () => {
                       Categories List
                     </Link>
                   </li>
+                  <li className="px-4 py-2 hover:bg-gray-700">
+                    <Link
+                      to="/admin/orderList"
+                      className="hover:text-white transition duration-200"
+                    >
+                      Orders List
+                    </Link>
+                  </li>
                 </ul>
               </li>
             )}
