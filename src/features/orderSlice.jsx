@@ -157,6 +157,12 @@ const orderSlice = createSlice({
     error: null,
   },
   reducers: {
+    resetOrders: (state) => {
+      state.currentOrder = null;
+      state.orders = [];
+      state.loading = "idle";
+      state.error = null;
+    }
   },
   extraReducers: (builder) => {
     // get order by id
@@ -224,9 +230,23 @@ const orderSlice = createSlice({
       state.loading = "idle";
       state.error = action.payload;
     });
+    // add order
+    builder.addCase(addOrder.pending, (state, action) => {
+      state.loading = "loading";
+    });
+    builder.addCase(addOrder.fulfilled, (state, action) => {
+      state.loading = "idle";
+      state.currentOrder = action.payload;
+      state.error = null;
+    });
+    builder.addCase(addOrder.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload;
+    });
   }
 });
 
+export const { resetOrders } = orderSlice.actions;
 export default orderSlice.reducer;
 
 

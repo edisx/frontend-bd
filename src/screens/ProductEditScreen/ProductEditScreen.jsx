@@ -2,9 +2,19 @@ import { useNavigate } from "react-router-dom";
 import ProductText from "./ProductText";
 import ProductImages from "./ProductImages";
 import ProductModel from "./ProductModel";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const ProductEditScreen = () => {
   const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.user.userInfo);
+
+  useEffect(() => {
+    if (!userInfo || !userInfo.isAdmin) {
+      navigate("/login");
+    }
+  }, [navigate, userInfo]);
+
 
   return (
     <>

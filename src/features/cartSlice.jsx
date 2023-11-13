@@ -18,7 +18,6 @@ const cartSlice = createSlice({
   initialState: savedCart ? savedCart : defaultState,
   reducers: {
     addToCart: (state, action) => {
-      // Simply add the new item to the cart without qty
       const item = action.payload;
       state.cartItems.push(item);
     },

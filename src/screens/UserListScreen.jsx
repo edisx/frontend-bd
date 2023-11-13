@@ -10,10 +10,15 @@ const UserListScreen = () => {
   const userAll = useSelector((state) => state.user);
   const { usersList, loading, error } = userAll;
   const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(getUsers());
+    } else {
+      navigate("/login");
+    }
+  }, [dispatch, navigate, userInfo]);
 
   const handleEditClick = (id) => {
     navigate(`/admin/user/${id}/edit`);

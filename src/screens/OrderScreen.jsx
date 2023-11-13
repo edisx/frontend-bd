@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrderById } from "../features/orderSlice";
 import { useParams } from "react-router-dom";
@@ -6,26 +6,57 @@ import Loader from "../components/Loader";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { payOrder } from "../features/orderSlice";
 import { deliverOrder } from "../features/orderSlice";
+import { useNavigate } from "react-router-dom";
 
 const OrderScreen = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // Fetch order data when the component mounts
   useEffect(() => {
     dispatch(getOrderById(id));
   }, [dispatch, id]);
 
+  
+
   // Access the order data from the Redux store
   const orderData = useSelector((state) => state.order.currentOrder);
+  const error = useSelector((state) => state.order.error?.detail);
   const userInfo = useSelector((state) => state.user.userInfo);
 
-  if (!orderData) {
-    return <Loader />;
-  }
+  const orderTotalRef = useRef(orderData?.total_price);
+
+  useEffect(() => {
+    orderTotalRef.current = orderData?.total_price;
+  }, [orderData?.total_price]);
+
+  useEffect(() => {
+    if (error) {
+      console.log(error)
+      console.log(error.status)
+      navigate("/");
+    }
+  }, [error, navigate]);
+
+  const createOrder = (data, actions) => {
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: orderTotalRef.current,
+          },
+        },
+      ],
+    });
+  };
 
   const handleMarkAsDelivered = () => {
     dispatch(deliverOrder(orderData.id));
+  };
+
+  if (!orderData) {
+    return <Loader />;
   }
 
   return (
@@ -100,7 +131,7 @@ const OrderScreen = () => {
           </p>
         </div>
         {/* paypal part */}
-        {!orderData.is_paid && (
+        {orderData && !orderData.is_paid && orderData.total_price > 0 && (
           <div className="mt-4">
             <PayPalScriptProvider
               options={{
@@ -109,17 +140,7 @@ const OrderScreen = () => {
               }}
             >
               <PayPalButtons
-                createOrder={(data, actions) => {
-                  return actions.order.create({
-                    purchase_units: [
-                      {
-                        amount: {
-                          value: orderData.total_price,
-                        },
-                      },
-                    ],
-                  });
-                }}
+                createOrder={createOrder}
                 onApprove={(data, actions) => {
                   return actions.order.capture().then(function (details) {
                     // alert('Transaction completed by ' + details.payer.name.given_name);
@@ -134,17 +155,19 @@ const OrderScreen = () => {
           </div>
         )}
         {/* if user is admin and order is paid */}
-        {userInfo && userInfo.isAdmin && orderData.is_paid && !orderData.is_delivered && (
-          <div className="mt-4">
-            <button
-              onClick={handleMarkAsDelivered}
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-            >
-              Mark As Delivered
-            </button>
-          </div>
-        )}
-
+        {userInfo &&
+          userInfo.isAdmin &&
+          orderData.is_paid &&
+          !orderData.is_delivered && (
+            <div className="mt-4">
+              <button
+                onClick={handleMarkAsDelivered}
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
+                Mark As Delivered
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );

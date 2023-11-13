@@ -2,7 +2,9 @@ import { NavLink, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
-import { Search } from "react-feather";
+import { resetOrders } from "../features/orderSlice";
+// import { Search } from "react-feather";
+
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -11,6 +13,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    dispatch(resetOrders());
     navigate("/");
   };
 

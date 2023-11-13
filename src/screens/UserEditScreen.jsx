@@ -11,14 +11,19 @@ const UserEditScreen = () => {
   const dispatch = useDispatch();
   const userAll = useSelector((state) => state.user);
   const { userDetail, loading, error } = userAll;
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchUserById(id));
-  }, [dispatch, id]);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(fetchUserById(id));
+    } else {
+      navigate("/login");
+    }
+  }, [dispatch, navigate, userInfo, id]);
 
   useEffect(() => {
     if (userDetail) {

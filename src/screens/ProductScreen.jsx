@@ -75,7 +75,7 @@ const ProductScreen = () => {
           <p className="mb-6 text-gray-600 leading-relaxed">
             {product.description}
           </p>
-          {product.count_in_stock > 0 && (
+          {product.count_in_stock > 0 ? (
             <>
               <div className="mb-6">
                 <label
@@ -101,6 +101,10 @@ const ProductScreen = () => {
 
               <ProductCart product={product} selectedSize={selectedSize} />
             </>
+          ) : (
+            <div className="text-center text-red-600">
+              <p>Sorry, this product is currently not in stock.</p>
+            </div>
           )}
         </div>
       </div>

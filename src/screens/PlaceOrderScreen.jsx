@@ -9,6 +9,8 @@ import { clearCart } from "../features/cartSlice";
 const PlaceOrderScreen = () => {
   const cart = useSelector((state) => state.cart);
   const [orderDetails, setOrderDetails] = useState({});
+  const orderData = useSelector((state) => state.order);
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,12 +46,14 @@ const PlaceOrderScreen = () => {
         totalPrice: orderDetails.totalPrice,
       })
     ).then((newOrder) => {
-      if (newOrder.payload) {
+      if (newOrder.payload && !newOrder.error) {
         navigate(`/order/${newOrder.payload.id}`);
         dispatch(clearCart());
       } else {
-        // Handle error here, as the order was not created
+        setError(orderData.error.detail);
       }
+    }).catch((error) => {
+      setError(error.message);
     });
   };
 
@@ -70,6 +74,7 @@ const PlaceOrderScreen = () => {
   return (
     <div className="m-4">
       <CheckoutSteps step1 step2 step3 step4 />
+      {error && <Message variant="danger">{error}</Message>}
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Shipping Information */}

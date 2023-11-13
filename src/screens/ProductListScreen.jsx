@@ -12,12 +12,18 @@ import { useNavigate } from "react-router-dom";
 const ProductListScreen = () => {
   const dispatch = useDispatch();
   const productAll = useSelector((state) => state.products);
+  const userInfo = useSelector((state) => state.user.userInfo);
   const { products, loading, error } = productAll;
   const navigate = useNavigate();
 
+
   useEffect(() => {
-    dispatch(fetchAllProductsForAdmin());
-  }, [dispatch]);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(fetchAllProductsForAdmin());
+    } else {
+      navigate("/login");
+    }
+  }, [dispatch, navigate, userInfo]);
 
   const handleEditClick = (id) => {
     navigate(`/admin/product/${id}/edit`);

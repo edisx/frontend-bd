@@ -35,7 +35,7 @@ const colorSlice = createSlice({
       // Remove the item from local storage
       localStorage.removeItem("colors");
     },
-    // You can add more reducers for different functionalities
+    
   },
 });
 

@@ -9,16 +9,22 @@ import {
 import { useState, useEffect } from "react";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { useNavigate } from "react-router-dom";
 
 const CategoryListScreen = () => {
   const dispatch = useDispatch();
   const categoryAll = useSelector((state) => state.categories);
   const { categories, loading, error } = categoryAll;
+  const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   useEffect(() => {
-    // sleep 1 second
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(fetchAllCategories());
+    } else {
+      navigate("/login");
+    }
+  }, [dispatch, navigate, userInfo]);
 
   if (loading === "loading") return <Loader />;
   if (error) return <Message variant="danger">{error}</Message>;

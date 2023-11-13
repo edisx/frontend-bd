@@ -56,6 +56,8 @@ const Layout = () => {
           <Route path="/placeorder" element={<PlaceOrderScreen />} />
           <Route path="/order/:id" element={<OrderScreen />} />
           <Route path="/admin/orderlist" element={<OrderListScreen />} />
+
+          <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </div>
       {showHeaderFooter && <Footer />}
