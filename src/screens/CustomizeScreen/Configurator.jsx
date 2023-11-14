@@ -53,7 +53,7 @@ const Configurator = () => {
           <ChevronLeft />
         </button>
         <div className="flex justify-center items-center min-w-[200px]">
-          <span>{selectedMesh?.name}</span>
+          <span>{selectedMesh?.name.replace(/_/g, " ")}</span>
           <span className="mx-2"></span>
           {/* Dynamic text for mesh count */}
           <span>
@@ -63,14 +63,13 @@ const Configurator = () => {
           </span>
         </div>
         <button onClick={() => navigateMeshes(1)}>
-          {/* Replace with right arrow icon */}
           <ChevronRight />
         </button>
       </div>
       {/* lower */}
       <div className="flex justify-center space-x-4 p-4">
         {selectedMesh?.colors.map((color) => (
-          <div key={color.id} className="text-center">
+          <div key={color.id} className="text-center relative w-20">
             <div
               onClick={() => {
                 setSelectedColor(color);
@@ -82,12 +81,16 @@ const Configurator = () => {
             >
               <div
                 className={`w-16 h-16 rounded-full ${
-                  isColorSelected(color) ? "border-2 border-white" : ""
+                  isColorSelected(color) ? "border-2 border-white" : "shadow-lg"
                 }`}
                 style={{ backgroundColor: color.hex_code }}
               ></div>
             </div>
-            <div className="mt-2">{color.color_name}</div>
+            {isColorSelected(color) && (
+              <div className="mt-2 w-full whitespace-nowrap text-ellipsis">
+                {color.color_name}
+              </div>
+            )}
           </div>
         ))}
       </div>

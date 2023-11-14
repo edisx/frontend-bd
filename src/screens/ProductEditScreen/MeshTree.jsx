@@ -99,7 +99,7 @@ const MeshTree = (props) => {
               className="flex flex-row text-white bg-blue-500 rounded p-2 cursor-pointer"
               onClick={() => handleMeshClick(mesh)}
             >
-              <div className="font-semibold">{mesh.name}</div>
+              <div className="font-semibold">{mesh.name.replace(/_/g, " ")}</div>
             </div>
             <div className="grid grid-cols-2 gap-2 mt-2">
               {mesh.colors.map((color) => (
