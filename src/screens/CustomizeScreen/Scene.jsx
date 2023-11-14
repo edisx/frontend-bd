@@ -19,7 +19,6 @@ const Scene = (props) => {
     if (child.isMesh) {
       const mesh_name = child.name;
       const mesh_id = props.meshes.find((mesh) => mesh.name === mesh_name)?.id;
-
       if (mesh_id !== undefined) {
         const colorEntry = colors.find((color) => color.meshId === mesh_id);
 
@@ -29,15 +28,13 @@ const Scene = (props) => {
           const newMaterial = child.material.clone();
           newMaterial.color.set(color);
           child.material = newMaterial;
-          child.castShadow = true;
-          child.receiveShadow = true;
         }
       }
     }
   });
 
   return (
-    <Canvas camera={{ position: [0, 2.3, 4], fov: 45 }} shadows>
+    <Canvas camera={{ position: [0, 2.3, 4], fov: 45 }}>
       <Environment
         files="/christmas_photo_studio_06_1k.hdr"
         background={false}
@@ -53,7 +50,6 @@ const Scene = (props) => {
         position={[-0.66, 0, 0]}
         scale={1.5}
         rotation={[(Math.PI / 180) * 10, 0, 0]}
-        castShadow
       >
         <primitive object={scene} />
       </mesh>
@@ -62,15 +58,10 @@ const Scene = (props) => {
         position={[0.66, 0, 0]}
         scale={[-1.5, 1.5, 1.5]}
         rotation={[(Math.PI / 180) * 10, 0, 0]}
-        castShadow
       >
         <primitive object={scene.clone()} />
       </mesh>
 
-      {/* <mesh position={[0, -0.1, 0]} rotation-x={-Math.PI / 2} receiveShadow>
-        <circleGeometry args={[100]} />
-        <meshStandardMaterial color={"white"} />
-      </mesh> */}
 
       <OrbitControls
         maxDistance={7}
@@ -82,5 +73,6 @@ const Scene = (props) => {
     </Canvas>
   );
 };
+
 
 export default Scene;
