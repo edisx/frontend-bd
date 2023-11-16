@@ -133,6 +133,55 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+export const createProductReview = createAsyncThunk(
+  "products/createProductReview",
+  async ({ productId, reviewData }, { rejectWithValue, getState }) => {
+    const {
+      user: { userInfo },
+    } = getState();
+
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/products/${productId}/reviews`,
+        reviewData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return { productId, review: response.data };
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deleteProductReview = createAsyncThunk(
+  "products/deleteProductReview",
+  async ({ productId, reviewId }, { rejectWithValue, getState }) => {
+    const {
+      user: { userInfo },
+    } = getState();
+
+    try {
+      await axios.delete(
+        `${API_URL}/api/products/${productId}/reviews/${reviewId}/delete`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return { productId, reviewId };
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -246,6 +295,38 @@ const productSlice = createSlice({
       state.loading = "idle";
       state.error = action.error.message;
     });
+    // add review
+    // builder.addCase(createProductReview.pending, (state) => {
+    //   state.loading = "loading";
+    // });
+    // builder.addCase(createProductReview.fulfilled, (state, action) => {
+    //   state.loading = "idle";
+    //   if (state.products.product.id === action.payload.productId) {
+    //     state.products.product.reviews.push(action.payload.review);
+    //     state.products.product.num_reviews += 1;
+    //   }
+    // });
+    // builder.addCase(createProductReview.rejected, (state, action) => {
+    //   state.loading = "idle";
+    //   state.error = action.error.message;
+    // });
+    // // delete review
+    // builder.addCase(deleteProductReview.pending, (state) => {
+    //   state.loading = "loading";
+    // });
+    // builder.addCase(deleteProductReview.fulfilled, (state, action) => {
+    //   state.loading = "idle";
+    //   if (state.product.id === action.payload.productId) {
+    //     state.product.reviews = state.product.reviews.filter(
+    //       (review) => review.id !== action.payload.reviewId
+    //     );
+    //     state.product.num_reviews -= 1;
+    //   }
+    // });
+    // builder.addCase(deleteProductReview.rejected, (state, action) => {
+    //   state.loading = "idle";
+    //   state.error = action.error.message;
+    // });
   },
 });
 

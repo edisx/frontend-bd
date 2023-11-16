@@ -6,17 +6,24 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import ProductCart from "../components/ProductCart";
+import {
+  createProductReview,
+  deleteProductReview,
+} from "../features/productSlice";
 
 const ProductScreen = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const productSingle = useSelector((state) => state.products);
   const { product, loading, error } = productSingle;
+  const userInfo = useSelector((state) => state.user.userInfo);
   const navigate = useNavigate();
 
   const [currentImage, setCurrentImage] = useState(null);
-
   const [selectedSize, setSelectedSize] = useState(null);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     dispatch(fetchSingleProduct(id));
@@ -27,6 +34,42 @@ const ProductScreen = () => {
       setCurrentImage(product.images[0].image); // set initial image
     }
   }, [product]);
+
+  const submitReview = async () => {
+    if (rating && comment) {
+      dispatch(
+        createProductReview({ productId: id, reviewData: { rating, comment } })
+      )
+        .then(() => {
+          setRating(0);
+          setComment("");
+          dispatch(fetchSingleProduct(id));
+        })
+        .catch((error) => {
+          console.log(error);
+          alert(
+            "An error occurred while submitting your review. Please try again later."
+          );
+        });
+    } else {
+      alert("Please enter a rating and comment");
+    }
+  };
+
+  const deleteReview = async (reviewId) => {
+    if (window.confirm("Are you sure you want to delete this review?")) {
+      dispatch(deleteProductReview({ productId: id, reviewId }))
+        .then(() => {
+          dispatch(fetchSingleProduct(id));
+        })
+        .catch((error) => {
+          console.log(error);
+          alert(
+            "An error occurred while deleting your review. Please try again later."
+          );
+        });
+    }
+  };
 
   if (loading === "loading") return <Loader />;
   if (error) return <Message variant="danger">{error}</Message>;
@@ -107,6 +150,74 @@ const ProductScreen = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Review Form */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-medium mb-4">Write a Review</h2>
+        <div>
+          <label htmlFor="rating">Rating</label>
+          <select
+            id="rating"
+            value={rating}
+            onChange={(e) => setRating(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            {/* Generate rating options */}
+            {[...Array(5)].map((_, index) => (
+              <option key={index + 1} value={index + 1}>
+                {index + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="comment">Comment</label>
+          <textarea
+            id="comment"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full p-2 border rounded"
+          ></textarea>
+        </div>
+        <button
+          onClick={submitReview}
+          className="bg-blue-500 text-white px-8 py-2 rounded-lg shadow-lg transition-transform duration-150 ease-in-out hover:scale-105"
+        >
+          Submit Review
+        </button>
+      </div>
+
+      {/* Display Reviews */}
+      {/* 
+      TODO: 
+      1. style reviews a bit better
+      2. create star rating component
+      2.5 fix the rating state bug
+      3. display errors clearly
+      
+       */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-medium mb-4">Reviews</h2>
+        {product.reviews?.length ? (
+          product.reviews.map((review) => (
+            <div key={review.id} className="group relative">
+              <strong>{review.name}</strong>
+              <p>Rating: {review.rating}</p>
+              <p>{review.comment}</p>
+                {(userInfo && (review.user === userInfo.id || userInfo.isAdmin)) && (
+                <button
+                  onClick={() => deleteReview(review.id)}
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded hidden group-hover:block"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          ))
+        ) : (
+          <p>No reviews yet.</p>
+        )}
       </div>
     </div>
   );
