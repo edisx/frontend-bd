@@ -8,8 +8,7 @@ import {
   updateProduct,
 } from "../../features/productSlice";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../components/Loader";
-import Message from "../../components/Message";
+import { CircularProgress, Alert } from "@mui/material";
 
 const ProductText = () => {
   const { id } = useParams();
@@ -92,8 +91,8 @@ const ProductText = () => {
       });
   };
 
-  if (loading === "loading") return <Loader />;
-  if (error) return <Message variant="danger">{error}</Message>;
+  if (loading === "loading") return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
     <>

@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchAllProducts } from "../features/productSlice";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
 import Product from "../components/Product";
+import { CircularProgress, Alert } from "@mui/material";
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -16,8 +15,8 @@ const HomeScreen = () => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  if (loading === "loading") return <Loader />;
-  if (error) return <Message variant="danger">{error}</Message>;
+  if (loading === "loading") return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
 
 
   

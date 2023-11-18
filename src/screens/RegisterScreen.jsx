@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../features/userSlice';
 import { useNavigate } from 'react-router-dom';
-import Message from '../components/Message';
+import { Alert, TextField, Button, Paper, Box } from '@mui/material';
 
 const RegisterScreen = () => {
   const [name, setName] = useState('');
@@ -28,52 +28,58 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (user.userInfo) {
-      navigate("/"); 
+      navigate("/");
     }
   }, [user, navigate]);
 
   return (
-    <div className="container mx-auto px-4 mt-8 w-1/3">
-      {user.error && <Message variant="danger">{user.error}</Message>}
+    <Box className="container mx-auto px-4 mt-8 w-1/3" component={Paper} elevation={3} padding={4}>
+      {user.error && <Alert severity="error">{user.error}</Alert>}
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <input 
-            type="text"
-            id="name"
-            value={name}
-            placeholder='Enter name'
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input 
-            type="email" 
-            id="email" 
-            value={email} 
-            placeholder='Enter email'
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input 
-            type="password" 
-            id="password" 
-            value={password} 
-            placeholder='Enter password'
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+        <TextField 
+          label="Name"
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField 
+          label="Email"
+          type="email" 
+          id="email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField 
+          label="Password"
+          type="password" 
+          id="password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          style={{ marginTop: '16px', textTransform: 'none' }}
+        >
           Register
-        </button>
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 

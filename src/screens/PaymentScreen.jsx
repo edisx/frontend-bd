@@ -1,74 +1,78 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import CheckoutSteps from "../components/CheckoutSteps";
-import { useDispatch, useSelector } from "react-redux";
-import { savePaymentMethod } from "../features/cartSlice";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import CheckoutSteps from '../components/CheckoutSteps';
+import { useDispatch, useSelector } from 'react-redux';
+import { savePaymentMethod } from '../features/cartSlice';
+import {
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Button,
+  Paper,
+  Box
+} from '@mui/material';
 
 const PaymentScreen = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [paymentMethod, setPaymentMethod] = useState("PayPal");
+  const [paymentMethod, setPaymentMethod] = useState('PayPal');
   const { shippingInfo } = cart;
 
   if (!shippingInfo.address) {
-    navigate("/shipping");
+    navigate('/shipping');
   }
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethod));
-    navigate("/placeorder");
+    navigate('/placeorder');
   };
 
   return (
-    <div className="p-5">
+    <Box sx={{ p: 5 }}>
       <CheckoutSteps step1 step2 step3 />
 
-      <form onSubmit={submitHandler} className="max-w-md mx-auto">
-        <fieldset className="mb-4">
-          <legend className="text-lg font-semibold mb-2">Select Method</legend>
-
-          <div className="flex items-center mb-2">
-            <input
-              type="radio"
-              id="PayPal"
+      <Paper elevation={3} sx={{ maxWidth: 'md', mx: 'auto', p: 3 }}>
+        <form onSubmit={submitHandler}>
+          <FormControl component="fieldset" sx={{ mb: 3 }}>
+            <FormLabel component="legend" sx={{ mb: 2, fontWeight: 'bold' }}>
+              Select Method
+            </FormLabel>
+            <RadioGroup
               name="paymentMethod"
-              value="PayPal"
-              checked={paymentMethod === "PayPal"}
+              value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="mr-2"
-            />
-            <label htmlFor="PayPal" className="flex-1 cursor-pointer">
-              PayPal or Credit Card
-            </label>
-          </div>
+            >
+              <FormControlLabel
+                value="PayPal"
+                control={<Radio />}
+                label="PayPal or Credit Card"
+              />
+              {/* Uncomment this section if you want to include Stripe as an option */}
+              {/* <FormControlLabel
+                value="Stripe"
+                control={<Radio />}
+                label="Stripe"
+              /> */}
+            </RadioGroup>
+          </FormControl>
 
-          {/* <div className="flex items-center">
-            <input
-              type="radio"
-              id="Stripe"
-              name="paymentMethod"
-              value="Stripe"
-              checked={paymentMethod === "Stripe"}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="mr-2"
-            />
-            <label htmlFor="Stripe" className="flex-1 cursor-pointer">
-              Stripe
-            </label>
-          </div> */}
-        </fieldset>
-
-        <button
-          type="submit"
-          className="w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow"
-        >
-          Continue
-        </button>
-      </form>
-    </div>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ textTransform: 'none' }}
+          >
+            Continue
+          </Button>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

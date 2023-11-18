@@ -1,9 +1,17 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import { fetchUserById, updateUser } from "../features/userSlice";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
+import { fetchUserById, updateUser } from '../features/userSlice';
+import {
+  CircularProgress,
+  Alert,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Typography,
+  Paper
+} from '@mui/material';
 
 const UserEditScreen = () => {
   const { id } = useParams();
@@ -13,22 +21,22 @@ const UserEditScreen = () => {
   const { userDetail, loading, error } = userAll;
   const userInfo = useSelector((state) => state.user.userInfo);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(fetchUserById(id));
     } else {
-      navigate("/login");
+      navigate('/login');
     }
   }, [dispatch, navigate, userInfo, id]);
 
   useEffect(() => {
     if (userDetail) {
-      setName(userDetail.name || "");
-      setEmail(userDetail.email || "");
+      setName(userDetail.name || '');
+      setEmail(userDetail.email || '');
       setIsAdmin(userDetail.isAdmin || false);
     }
   }, [userDetail]);
@@ -38,67 +46,69 @@ const UserEditScreen = () => {
     dispatch(updateUser({ userId: id, data: { name, email, isAdmin } }))
       .unwrap()
       .then((response) => {
-        navigate("/admin/userlist");
+        navigate('/admin/userlist');
       })
       .catch((error) => {
-        console.error("Update user failed", error);
+        console.error('Update user failed', error);
       });
   };
 
-  if (loading === "loading") return <Loader />;
-  if (error) return <Message variant="danger">{error}</Message>;
+  if (loading === 'loading') return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <div className="m-4 flex flex-col gap-4">
-      <span
-        className="text-blue-500 hover:underline cursor-pointer"
-        onClick={() => navigate("/admin/userList")}
+    <Paper className="m-4 p-4">
+      <Typography
+        variant="h6"
+        style={{ cursor: 'pointer' }}
+        color="primary"
+        onClick={() => navigate('/admin/userList')}
       >
         Go Back
-      </span>
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            placeholder="Enter name"
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            placeholder="Enter email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="isAdmin">Is Admin</label>
-          <input
-            type="checkbox"
-            id="isAdmin"
-            checked={isAdmin}
-            onChange={(e) => setIsAdmin(e.target.checked)}
-            className="mx-2 p-2 border rounded"
-          />
-        </div>
-        <button
+        <TextField
+          label="Name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              id="isAdmin"
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+            />
+          }
+          label="Is Admin"
+          margin="normal"
+        />
+        <Button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          variant="contained"
+          color="primary"
+          style={{ marginTop: '16px' }}
         >
           Update
-        </button>
+        </Button>
       </form>
-    </div>
+    </Paper>
   );
 };
 

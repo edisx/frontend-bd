@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile, updateUserProfile } from "../features/userSlice";
-import Message from "../components/Message";
 import { getMyOrders } from "../features/orderSlice";
 import { Link } from "react-router-dom";
 import { X } from "react-feather";
+import {
+  Alert,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+} from "@mui/material";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
@@ -32,7 +44,7 @@ const ProfileScreen = () => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setMatchError("Passwords do not match!");
-    } else {
+    } else if (password !== "" && confirmPassword !== "") {
       setMatchError(null);
       dispatch(updateUserProfile({ name, email, password })).then((action) => {
         if (action.type === updateUserProfile.fulfilled.type) {
@@ -43,118 +55,111 @@ const ProfileScreen = () => {
   };
 
   const formatDate = (dateString) => {
-    return dateString.split('T')[0];
+    return dateString.split("T")[0];
   };
 
   return (
     <div className="container mx-auto px-4 mt-8 flex">
       <div className="w-1/2 pr-4">
-        <h1 className="text-2xl font-bold mb-4">User Profile</h1>
-        {error && <Message variant="danger">{error}</Message>}
-        {matchError && <Message variant="danger">{matchError}</Message>}
-        {successMessage && (
-          <Message variant="success">{successMessage}</Message>
-        )}
+        <Typography variant="h4" gutterBottom>
+          User Profile
+        </Typography>
+        {error && <Alert severity="error">{error}</Alert>}
+        {matchError && <Alert severity="error">{matchError}</Alert>}
+        {successMessage && <Alert severity="success">{successMessage}</Alert>}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium mb-2">
-              Name:
-            </label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium mb-2">
-              Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium mb-2"
-            >
-              Password:
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="Enter new password"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium mb-2"
-            >
-              Confirm Password:
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="Confirm new password"
-            />
-          </div>
-          <button
+          <TextField
+            label="Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <TextField
+            label="Password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter new password"
+          />
+          <TextField
+            label="Confirm Password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm new password"
+          />
+          <Button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "16px" }}
           >
             Update
-          </button>
+          </Button>
         </form>
       </div>
       <div className="w-1/2 pl-4">
-        {/* Order List Table */}
-        <h2 className="text-2xl font-bold mb-4">My Orders</h2>
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">ID</th>
-              <th className="px-4 py-2">Date</th>
-              <th className="px-4 py-2">Total</th>
-              <th className="px-4 py-2">Paid</th>
-              <th className="px-4 py-2">Delivered</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id}>
-                <td className="border px-4 py-2">
-                  <Link to={`/order/${order.id}`} className="text-blue-500 hover:text-blue-700">
-                    {order.id}
-                  </Link>
-                </td>
-                <td className="border px-4 py-2">{formatDate(order.created_at)}</td>
-                <td className="border px-4 py-2">{order.total_price}</td>
-                <td className="border px-4 py-2">
-                  {order.is_paid ? formatDate(order.paid_at) : <X />}
-                </td>
-                <td className="border px-4 py-2">
-                  {order.is_delivered ? formatDate(order.delivered_at) : <X />}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Typography variant="h4" gutterBottom>
+          My Orders
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>Delivered</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell>
+                    <Link
+                      to={`/order/${order.id}`}
+                      style={{ color: "#1976d2" }}
+                    >
+                      {order.id}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{formatDate(order.created_at)}</TableCell>
+                  <TableCell>{order.total_price}</TableCell>
+                  <TableCell>
+                    {order.is_paid ? formatDate(order.paid_at) : <X />}
+                  </TableCell>
+                  <TableCell>
+                    {order.is_delivered ? (
+                      formatDate(order.delivered_at)
+                    ) : (
+                      <X />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );

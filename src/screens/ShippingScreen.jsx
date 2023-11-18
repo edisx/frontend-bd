@@ -1,110 +1,95 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { saveShippingInfo } from "../features/cartSlice";
-import CheckoutSteps from "../components/CheckoutSteps";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveShippingInfo } from '../features/cartSlice';
+import CheckoutSteps from '../components/CheckoutSteps';
+import { TextField, Button, Box, Typography, Paper } from '@mui/material';
 
 const ShippingScreen = () => {
   const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
+  const userInfo = useSelector((state) => state.user.userInfo);
   const { shippingInfo } = cart;
 
   const dispatch = useDispatch();
 
-  const [address, setAddress] = useState(shippingInfo.address || "");
-  const [city, setCity] = useState(shippingInfo.city || "");
-  const [postalCode, setPostalCode] = useState(shippingInfo.postalCode || "");
-  const [country, setCountry] = useState(shippingInfo.country || "");
+  const [address, setAddress] = useState(shippingInfo.address || '');
+  const [city, setCity] = useState(shippingInfo.city || '');
+  const [postalCode, setPostalCode] = useState(shippingInfo.postalCode || '');
+  const [country, setCountry] = useState(shippingInfo.country || '');
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(saveShippingInfo({ address, city, postalCode, country }));
-    navigate("/payment");
+    navigate('/payment');
   };
 
   return (
-    <div className="p-5">
+    <Box sx={{ p: 5 }}>
       <CheckoutSteps step1 step2 />
-      <div className="w-full max-w-md">
-        <h1 className="text-xl font-bold mb-4">Shipping</h1>
-        <form onSubmit={submitHandler} className="space-y-4">
-          <div>
-            <label
-              htmlFor="address"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Address
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Enter address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="city"
-              className="block text-sm font-medium text-gray-700"
-            >
-              City
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Enter city"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="postalCode"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Postal Code
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Enter postal code"
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="country"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Country
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Enter country"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
-
-          <button
+      <Paper elevation={3} sx={{ maxWidth: 'md', mx: 'auto', p: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          Shipping
+        </Typography>
+        <form onSubmit={submitHandler} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <TextField
+            label="Address"
+            type="text"
+            required
+            placeholder="Enter address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            label="City"
+            type="text"
+            required
+            placeholder="Enter city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            label="Postal Code"
+            type="text"
+            required
+            placeholder="Enter postal code"
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            label="Country"
+            type="text"
+            required
+            placeholder="Enter country"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <Button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
           >
             Continue
-          </button>
+          </Button>
         </form>
-      </div>
-    </div>
+      </Paper>
+    </Box>
   );
 };
 

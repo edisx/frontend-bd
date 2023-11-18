@@ -1,6 +1,20 @@
-import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart } from "../features/cartSlice";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeFromCart } from '../features/cartSlice';
+import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  Paper,
+  Box,
+  Link,
+  Alert
+} from '@mui/material';
+
 
 const CartScreen = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -19,7 +33,6 @@ const CartScreen = () => {
       })
       .join(", ");
 
-    // Trim the string to a maximum of 20 characters
     return mappingString.length > 20
       ? `${mappingString.substring(0, 100)}...`
       : mappingString;
@@ -29,66 +42,60 @@ const CartScreen = () => {
     .reduce((acc, item) => acc + item.price * 1, 0)
     .toFixed(2);
 
-  return (
-    <div className="container mx-auto px-4 mt-8 flex">
-      {/* Cart Items - 60% */}
-      <div className="w-3/5 pr-4">
-        <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
-
-        {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
-        ) : (
-          <ul>
-            {cartItems.map((item) => (
-              <li
-                key={`${item.product}-${item.size}-${item.uniqueId}`}
-                className="border-b py-2 flex justify-between items-center"
-              >
-                <div className="flex items-center">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 mr-4 rounded"
-                  />
-                  <span className="mr-4">{item.name}</span>
-                  <span>Size: {item.size.size}</span>
-                  {/* Only display color mapping if item.colors is not empty */}
-                  {item.colors && item.colors.length > 0 && (
-                    <span className="ml-4">
-                      Colors: {getColorMappingString(item.colors)}
-                    </span>
-                  )}
-                  <span className="ml-4">{item.price} €</span>
-                </div>
-                <button
-                  onClick={() => handleRemoveFromCart(item.uniqueId)}
-                  className="text-red-500 hover:underline"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Price Calculation and Checkout - 40% */}
-      <div className="w-2/5 border-l pl-4">
-        <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-        <div className="mb-4">
-          <span className="font-medium text-lg">Total:</span>{" "}
-          <span className="text-lg">${total}</span>
-        </div>
-        <button
-          onClick={() => navigate("/shipping")}
-          disabled={cartItems.length === 0}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Proceed to Checkout
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default CartScreen;
+    return (
+      <Box className="m-4" display="flex" flexDirection={{ xs: "column", md: "row" }}>
+        <Box flex={2} mr={2}>
+          <Typography variant="h5" gutterBottom>Your Cart</Typography>
+          {cartItems.length === 0 ? (
+            <Alert severity="info">Your cart is empty</Alert>
+          ) : (
+            <List>
+              {cartItems.map((item, index) => (
+                <Paper key={index} elevation={3} sx={{ mb: 2, p: 3 }}>
+                  <ListItem>
+                    <ListItemIcon>
+                      <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', borderRadius: '8px' }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={<Link to={`/product/${item.product}`} style={{ textDecoration: 'none', color: '#1976d2' }}>{item.name}</Link>}
+                      secondary={`Size: ${item.size.size} - ${getColorMappingString(item.colors)}`}
+                    />
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{item.price} €</Typography>
+                    <Button
+                      onClick={() => handleRemoveFromCart(item.uniqueId)}
+                      color="error"
+                      variant="outlined"
+                      sx={{ ml: 2 }}
+                    >
+                      Remove
+                    </Button>
+                  </ListItem>
+                </Paper>
+              ))}
+            </List>
+          )}
+        </Box>
+  
+        <Box flex={1} ml={2}>
+          <Paper elevation={3} sx={{ p: 3 }}>
+            <Typography variant="h5" gutterBottom>Order Summary</Typography>
+            <Box sx={{ my: 2 }}>
+              <Typography variant="body1" gutterBottom>Total: {total} €</Typography>
+            </Box>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => navigate("/shipping")}
+              disabled={cartItems.length === 0}
+              sx={{ mt: 2 }}
+            >
+              Proceed to Checkout
+            </Button>
+          </Paper>
+        </Box>
+      </Box>
+    );
+  };
+  
+  export default CartScreen;

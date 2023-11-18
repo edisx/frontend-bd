@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchSingleProduct } from "../features/productSlice";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
 import ProductCart from "../components/ProductCart";
 import {
   createProductReview,
@@ -12,6 +10,7 @@ import {
 } from "../features/productSlice";
 import { Trash } from "react-feather";
 import StarRating from "../components/StarRating";
+import { CircularProgress, Alert } from "@mui/material";
 
 const ProductScreen = () => {
   const { id } = useParams();
@@ -79,8 +78,8 @@ const ProductScreen = () => {
     setRating(newRating);
   };
 
-  if (loading === "loading") return <Loader />;
-  if (error) return <Message variant="danger">{error}</Message>;
+  if (loading === "loading") return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
     <div className="container mx-auto px-4 mt-12">
@@ -172,7 +171,7 @@ const ProductScreen = () => {
       {/* Review Form */}
       <div className="p-4 mt-20">
         <h2 className="text-2xl font-medium mb-4">Write a Review</h2>
-        {errorMessage && <Message variant="danger">{errorMessage}</Message>}
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <div>
           <label htmlFor="rating">Rating</label>
           <StarRating totalStars={5} onRatingSelected={handleRatingChange} />

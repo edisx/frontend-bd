@@ -1,10 +1,20 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import { getAllOrders } from "../features/orderSlice";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllOrders } from '../features/orderSlice';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import {
+  CircularProgress,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Link
+} from '@mui/material';
 import { X } from "react-feather";
 
 const OrderListScreen = () => {
@@ -18,56 +28,56 @@ const OrderListScreen = () => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(getAllOrders());
     } else {
-      navigate("/login");
+      navigate('/login');
     }
   }, [dispatch, navigate, userInfo]);
 
   return (
-    <div className="p-5">
-      <h1 className="font-bold text-lg">Orders</h1>
-      {loading === "loading" ? (
-        <Loader />
+    <Paper className="p-5">
+      <Typography variant="h5" className="font-bold mb-4">Orders</Typography>
+      {loading === 'loading' ? (
+        <CircularProgress />
       ) : error ? (
-        <Message variant="danger">{error}</Message>
+        <Alert severity="error">{error}</Alert>
       ) : (
-        <div className="overflow-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivered</th>
-                <th className="px-6 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+        <TableContainer>
+          <Table className="min-w-full divide-y divide-gray-200">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>Delivered</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{order.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{order.user.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{new Date(order.created_at).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{`$${parseFloat(order.total_price).toFixed(2)}`}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {order.is_paid ? new Date(order.paid_at).toLocaleDateString() : <X className="text-red-500" />}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {order.is_delivered ? new Date(order.delivered_at).toLocaleDateString() : <X className="text-red-500" />}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Link to={`/order/${order.id}`} className="text-indigo-600 hover:text-indigo-900">
-                      <i className="fas fa-info-circle"></i> Details
+                <TableRow key={order.id}>
+                  <TableCell>{order.id}</TableCell>
+                  <TableCell>{order.user.name}</TableCell>
+                  <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>{`$${parseFloat(order.total_price).toFixed(2)}`}</TableCell>
+                  <TableCell>
+                    {order.is_paid ? new Date(order.paid_at).toLocaleDateString() : <X className='text-red-500' />}
+                  </TableCell>
+                  <TableCell>
+                    {order.is_delivered ? new Date(order.delivered_at).toLocaleDateString() : <X className='text-red-500' />}
+                  </TableCell>
+                  <TableCell>
+                    <Link component={RouterLink} to={`/order/${order.id}`} color="primary">
+                      Details
                     </Link>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
-    </div>
+    </Paper>
   );
 };
 

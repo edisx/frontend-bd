@@ -204,6 +204,7 @@ const CategoryListScreen = () => {
         </Box>
       </Modal>
 
+
       {/* Delete Confirmation Modal */}
       <Modal
         open={deleteModalOpen}

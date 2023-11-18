@@ -1,9 +1,19 @@
-import { useSelector, useDispatch } from "react-redux";
-import { getUsers, deleteUser } from "../features/userSlice";
-import { useEffect } from "react";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUsers, deleteUser } from '../features/userSlice';
+import { useNavigate } from 'react-router-dom';
+import {
+  CircularProgress,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Paper
+} from '@mui/material';
 
 const UserListScreen = () => {
   const dispatch = useDispatch();
@@ -16,7 +26,7 @@ const UserListScreen = () => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(getUsers());
     } else {
-      navigate("/login");
+      navigate('/login');
     }
   }, [dispatch, navigate, userInfo]);
 
@@ -26,47 +36,59 @@ const UserListScreen = () => {
 
   const handleDeleteClick = (id) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
+      'Are you sure you want to delete this user?'
     );
     if (confirmDelete) {
       dispatch(deleteUser(id));
     }
   };
 
-  if (loading === "loading") return <Loader />;
-  if (error) return <Message variant="danger">{error}</Message>;
+  if (loading === 'loading') return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <div className="p-4">
-      <div className="grid grid-cols-5 gap-4 font-semibold border-b-2">
-        <div>ID</div>
-        <div>Name</div>
-        <div>Email</div>
-        <div>Admin</div>
-        <div>Actions</div>
-      </div>
-      {usersList.map((user) => (
-        <div key={user.id} className="grid grid-cols-5 gap-4 py-2 border-b">
-          <div>{user.id}</div>
-          <div>{user.name}</div>
-          <div>{user.email}</div>
-          <div>{user.isAdmin ? "Yes" : ""}</div>
-          <div> <button
-              className="mr-2 bg-blue-500 text-white py-1 px-2 rounded"
-              onClick={() => handleEditClick(user.id)}
-            >
-              Edit
-            </button>
-
-            <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
-              onClick={() => handleDeleteClick(user.id)}
-            >
-              Delete
-            </button></div>
-        </div>
-      ))}
-    </div>
+    <Paper className="p-4">
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Admin</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {usersList.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEditClick(user.id)}
+                    style={{ marginRight: '8px' }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDeleteClick(user.id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 };
 

@@ -1,48 +1,60 @@
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Stepper, Step, StepLabel, Box } from '@mui/material';
 
 const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
+    let activeStep = 0;
+    if (step1) activeStep = 1;
+    if (step2) activeStep = 2;
+    if (step3) activeStep = 3;
+    if (step4) activeStep = 4;
+
+    activeStep -= 1;
+
+    const steps = ['Log In', 'Shipping', 'Payment', 'Place Order'];
+
     return (
-        <nav className="flex justify-center mb-4 space-x-4">
-            <div>
-                {step1 ? (
-                    <Link to="/login" className="text-blue-600 hover:text-blue-800">
-                        Log In
-                    </Link>
-                ) : (
-                    <span className="text-gray-400 cursor-not-allowed">Log In</span>
-                )}
-            </div>
+        <Box sx={{ width: '100%', mb: 6 }}>
+            <Stepper activeStep={activeStep} alternativeLabel>
+                {steps.map((label, index) => {
+                    const stepProps = {};
+                    let linkPath = "";
 
-            <div>
-                {step2 ? (
-                    <Link to="/shipping" className="text-blue-600 hover:text-blue-800">
-                        Shipping
-                    </Link>
-                ) : (
-                    <span className="text-gray-400 cursor-not-allowed">Shipping</span>
-                )}
-            </div>
+                    switch (index) {
+                        case 0:
+                            linkPath = "/login";
+                            break;
+                        case 1:
+                            linkPath = "/shipping";
+                            break;
+                        case 2:
+                            linkPath = "/payment";
+                            break;
+                        case 3:
+                            linkPath = "/placeorder";
+                            break;
+                        default:
+                            break;
+                    }
 
-            <div>
-                {step3 ? (
-                    <Link to="/payment" className="text-blue-600 hover:text-blue-800">
-                        Payment
-                    </Link>
-                ) : (
-                    <span className="text-gray-400 cursor-not-allowed">Payment</span>
-                )}
-            </div>
-
-            <div>
-                {step4 ? (
-                    <Link to="/placeorder" className="text-blue-600 hover:text-blue-800">
-                        Place Order
-                    </Link>
-                ) : (
-                    <span className="text-gray-400 cursor-not-allowed">Place Order</span>
-                )}
-            </div>
-        </nav>
+                    return (
+                        <Step key={label} {...stepProps}>
+                            <StepLabel>
+                                {index < activeStep ? (
+                                    <Link to={linkPath} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        {label}
+                                    </Link>
+                                ) : (
+                                    <span style={{ color: index === activeStep ? '#1976d2' : '#c0c0c0' }}>
+                                        {label}
+                                    </span>
+                                )}
+                            </StepLabel>
+                        </Step>
+                    );
+                })}
+            </Stepper>
+        </Box>
     );
 };
 

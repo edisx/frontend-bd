@@ -2,11 +2,12 @@ import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrderById } from "../features/orderSlice";
 import { useParams } from "react-router-dom";
-import Loader from "../components/Loader";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { payOrder } from "../features/orderSlice";
 import { deliverOrder } from "../features/orderSlice";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress, Alert } from "@mui/material";
+import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 
 const OrderScreen = () => {
   const dispatch = useDispatch();
@@ -17,8 +18,6 @@ const OrderScreen = () => {
   useEffect(() => {
     dispatch(getOrderById(id));
   }, [dispatch, id]);
-
-  
 
   // Access the order data from the Redux store
   const orderData = useSelector((state) => state.order.currentOrder);
@@ -33,8 +32,8 @@ const OrderScreen = () => {
 
   useEffect(() => {
     if (error) {
-      console.log(error)
-      console.log(error.status)
+      console.log(error);
+      console.log(error.status);
       navigate("/");
     }
   }, [error, navigate]);
@@ -55,15 +54,28 @@ const OrderScreen = () => {
     dispatch(deliverOrder(orderData.id));
   };
 
+  const getColorMappingString = (colors) => {
+    const mappingString = colors
+      .map((colorObj) => {
+        const [meshName, colorName] = Object.entries(colorObj)[0];
+        return `${meshName}: ${colorName}`;
+      })
+      .join(", ");
+
+    return mappingString.length > 20
+      ? `${mappingString.substring(0, 100)}...`
+      : mappingString;
+  };
+
   if (!orderData) {
-    return <Loader />;
+    return <CircularProgress />;
   }
 
   return (
     <div className="flex flex-wrap md:flex-nowrap justify-between p-4 gap-4">
       <div className="md:w-1/2 space-y-6">
         {/* Shipping Information */}
-        <div className="bg-white p-4 rounded shadow-lg border border-gray-200">
+        <div className="bg-white p-4 rounded shadow-md border border-gray-200">
           <h2 className="font-bold text-lg text-gray-800">Shipping</h2>
           <p className="text-gray-600">
             {orderData.shippingAddress.address},{" "}
@@ -83,7 +95,7 @@ const OrderScreen = () => {
         </div>
 
         {/* Payment Method */}
-        <div className="bg-white p-4 rounded shadow-lg border border-gray-200">
+        <div className="bg-white p-4 rounded shadow-md border border-gray-200">
           <h2 className="font-bold text-lg text-gray-800">Payment Method</h2>
           <p className="text-gray-600">{orderData.payment_method}</p>
           <p
@@ -96,26 +108,41 @@ const OrderScreen = () => {
         </div>
 
         {/* Order Items */}
-        <div className="bg-white p-4 rounded shadow-lg border border-gray-200">
-          <h2 className="font-bold text-lg text-gray-800">Order Items</h2>
+        <Card className="bg-white p-4 rounded shadow-md border border-gray-200">
+          <Typography variant="h5" gutterBottom>
+            Order Items
+          </Typography>
           {orderData.orderItems.map((item) => (
-            <div key={item.id} className="border-b border-gray-200 py-2">
-              <p className="text-gray-600">
-                {item.name} - ${item.price}
-              </p>
-              {/* image */}
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-20 h-20 object-cover"
-              />
-            </div>
+            <Grid container spacing={2} key={item.id} className="py-2">
+              <Grid item xs={3}>
+                <CardMedia
+                  component="img"
+                  image={item.image}
+                  alt={item.name}
+                  className="w-20 h-20 object-cover"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <CardContent>
+                  <Typography variant="subtitle1">{item.name}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Size: {item.size.size} -{" "}
+                    {getColorMappingString(item.colors)}
+                  </Typography>
+                </CardContent>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography variant="body1" color="textPrimary">
+                  ${item.price}
+                </Typography>
+              </Grid>
+            </Grid>
           ))}
-        </div>
+        </Card>
       </div>
 
       {/* Order Summary */}
-      <div className="md:w-1/2 bg-gray-50 p-4 rounded shadow-lg">
+      <div className="md:w-1/2 bg-gray-50 p-4 rounded shadow-md">
         <h2 className="font-bold text-lg text-gray-800">Order Summary</h2>
         <div className="space-y-2">
           <p className="text-gray-600">
