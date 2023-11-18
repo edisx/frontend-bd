@@ -1,15 +1,40 @@
-import { useSelector, useDispatch } from "react-redux";
-
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   fetchAllCategories,
   createCategory,
   deleteCategory,
   updateCategory,
-} from "../features/categorySlice";
-import { useState, useEffect } from "react";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import { useNavigate } from "react-router-dom";
+} from '../features/categorySlice';
+import { useNavigate } from 'react-router-dom';
+import {
+  CircularProgress,
+  Alert,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Modal,
+  Box,
+  Typography,
+  TextField
+} from '@mui/material';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const CategoryListScreen = () => {
   const dispatch = useDispatch();
@@ -17,6 +42,12 @@ const CategoryListScreen = () => {
   const { categories, loading, error } = categoryAll;
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -26,77 +57,201 @@ const CategoryListScreen = () => {
     }
   }, [dispatch, navigate, userInfo]);
 
-  if (loading === "loading") return <Loader />;
-  if (error) return <Message variant="danger">{error}</Message>;
+  const handleEditClick = (category) => {
+    setCurrentCategory(category);
+    setNewCategoryName(category.name);
+    setModalOpen(true);
+  };
 
-  const handleEditClick = (id) => {
-    const currentCategoryName = categories.find((cat) => cat.id === id).name;
-
-    const newCategoryName = window.prompt(
-      "Edit category name:",
-      currentCategoryName
-    );
-
-    if (newCategoryName && newCategoryName !== currentCategoryName) {
-      dispatch(updateCategory({ id: id, category: { name: newCategoryName } }));
+  const handleUpdateCategory = () => {
+    if (newCategoryName && newCategoryName !== currentCategory.name) {
+      dispatch(updateCategory({ id: currentCategory.id, category: { name: newCategoryName } }))
+        .unwrap()
+        .then(() => {
+          setErrorMessage("");
+          setModalOpen(false);
+        })
+        .catch((error) => {
+          handleModalError(error);
+        });
     }
   };
 
-  const handleDeleteClick = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this category?"
-    );
-    if (confirmDelete) {
-      dispatch(deleteCategory(id));
-    }
+  const handleDeleteClick = (category) => {
+    setCurrentCategory(category);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    dispatch(deleteCategory(currentCategory.id))
+      .unwrap()
+      .then(() => {
+        setErrorMessage("");
+        setDeleteModalOpen(false);
+      })
+      .catch((error) => {
+        handleModalError(error);
+      });
   };
 
   const handleCreateClick = () => {
-    const newCategoryName = window.prompt("Enter new category name:");
+    setNewCategoryName("");
+    setCreateModalOpen(true);
+  };
 
+  const confirmCreate = () => {
     if (newCategoryName) {
-      dispatch(createCategory({ name: newCategoryName }));
+      dispatch(createCategory({ name: newCategoryName }))
+        .unwrap()
+        .then(() => {
+          setErrorMessage("");
+          setCreateModalOpen(false);
+        })
+        .catch((error) => {
+          handleModalError(error);
+        });
     }
   };
 
+  const handleModalError = (error) => {
+    if (error && error.error) {
+      setErrorMessage(error.error);
+    } else if (error && error.name) {
+      setErrorMessage(error.name.join(" "));
+    } else {
+      setErrorMessage("An unknown error occurred");
+    }
+  };
+
+  if (loading === "loading") return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
+
   return (
     <div className="p-4">
+      {errorMessage && (
+        <Alert severity="error" className="mb-4">
+          {errorMessage}
+        </Alert>
+      )}
       <div className="mb-4">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleCreateClick}
-        >
+        <Button variant="contained" color="primary" onClick={handleCreateClick}>
           Create Category
-        </button>
+        </Button>
       </div>
-      <div className="grid grid-cols-4 gap-4 font-semibold border-b-2">
-        <div>ID</div>
-        <div>Category</div>
-        <div>Date Created</div>
-        <div>Actions</div>
-      </div>
-      {categories.map((category) => (
-        <div key={category.id} className="grid grid-cols-4 gap-4 py-2 border-b">
-          <div>{category.id}</div>
-          <div>{category.name}</div>
-          <div>{category.created_at.substring(0, 10)}</div>
-          <div>
-            <button
-              className="mr-2 bg-blue-500 text-white py-1 px-2 rounded"
-              onClick={() => handleEditClick(category.id)}
-            >
-              Edit
-            </button>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Date Created</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {categories.map((category) => (
+              <TableRow key={category.id}>
+                <TableCell>{category.id}</TableCell>
+                <TableCell>{category.name}</TableCell>
+                <TableCell>{category.created_at.substring(0, 10)}</TableCell>
+                <TableCell className="space-x-2">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEditClick(category)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDeleteClick(category)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-            <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
-              onClick={() => handleDeleteClick(category.id)}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ))}
+      {/* Edit Category Modal */}
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-title" variant="h6">
+            Edit Category
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Category Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+          />
+          <Button onClick={handleUpdateCategory} color="primary">
+            Update
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        aria-labelledby="delete-modal-title"
+      >
+        <Box sx={style}>
+          <Typography id="delete-modal-title" variant="h6">
+            Confirm Delete
+          </Typography>
+          <Typography>
+            Are you sure you want to delete this category?
+          </Typography>
+          <Button onClick={confirmDelete} color="error">
+            Delete
+          </Button>
+          <Button onClick={() => setDeleteModalOpen(false)}>
+            Cancel
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* Create Category Modal */}
+      <Modal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        aria-labelledby="create-modal-title"
+      >
+        <Box sx={style}>
+          <Typography id="create-modal-title" variant="h6">
+            Create New Category
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="new-category"
+            label="Category Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+          />
+          <Button onClick={confirmCreate} color="primary">
+            Create
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };

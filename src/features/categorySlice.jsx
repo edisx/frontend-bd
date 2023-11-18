@@ -116,26 +116,13 @@ const categorySlice = createSlice({
     });
 
     // Handle createCategory
-    builder.addCase(createCategory.pending, (state) => {
-      state.loading = "loading";
-    });
     builder.addCase(createCategory.fulfilled, (state, action) => {
       state.loading = "succeeded";
       state.categories.push(action.payload);
       state.error = null;
     });
-    builder.addCase(createCategory.rejected, (state, action) => {
-      state.loading = "failed";
-      state.error =
-        action.payload && action.payload.error
-          ? action.payload.error
-          : "Unknown error";
-    });
 
     // Handle updateCategory
-    builder.addCase(updateCategory.pending, (state) => {
-      state.loading = "loading";
-    });
     builder.addCase(updateCategory.fulfilled, (state, action) => {
       state.loading = "succeeded";
       const index = state.categories.findIndex(
@@ -146,18 +133,8 @@ const categorySlice = createSlice({
       }
       state.error = null;
     });
-    builder.addCase(updateCategory.rejected, (state, action) => {
-      state.loading = "failed";
-      state.error =
-        action.payload && action.payload.error
-          ? action.payload.error
-          : "Unknown error";
-    });
 
     // Handle deleteCategory
-    builder.addCase(deleteCategory.pending, (state) => {
-      state.loading = "loading";
-    });
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
       state.loading = "succeeded";
       state.categories = state.categories.filter(
@@ -165,14 +142,8 @@ const categorySlice = createSlice({
       );
       state.error = null;
     });
-    builder.addCase(deleteCategory.rejected, (state, action) => {
-      state.loading = "failed";
-      state.error =
-        action.payload && action.payload.error
-          ? action.payload.error
-          : "Unknown error";
-    });
   },
 });
+
 
 export default categorySlice.reducer;

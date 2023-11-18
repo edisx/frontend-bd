@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import { resetOrders } from "../features/orderSlice";
-// import { Search } from "react-feather";
+import { Search, ShoppingCart } from "react-feather";
 
 
 const Header = () => {
@@ -43,7 +43,7 @@ const Header = () => {
                 to="/cart"
                 className="hover:text-white transition duration-200"
               >
-                Cart
+                <ShoppingCart size={20} />
               </NavLink>
             </li>
 
