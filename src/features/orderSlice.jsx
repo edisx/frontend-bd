@@ -122,7 +122,6 @@ export const getAllOrders = createAsyncThunk(
   }
 );
 
-// deliver order {{URL}}/api/orders/40/deliver/ PUT request, admin only
 export const deliverOrder = createAsyncThunk(
   'order/deliverOrder',
   async (orderId, { rejectWithValue, getState }) => {

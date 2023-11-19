@@ -17,6 +17,7 @@ const ProductScreen = () => {
   const dispatch = useDispatch();
   const productSingle = useSelector((state) => state.products);
   const { product, loading, error } = productSingle;
+  const colors = useSelector((state) => state.colors);
   const userInfo = useSelector((state) => state.user.userInfo);
   const navigate = useNavigate();
 
@@ -53,7 +54,7 @@ const ProductScreen = () => {
           dispatch(fetchSingleProduct(id));
         })
         .catch((error) => {
-          setErrorMessage(error.message);
+          setErrorMessage(error.error);
         });
     } else {
       setErrorMessage("Please select a rating and write a comment.");
@@ -77,6 +78,34 @@ const ProductScreen = () => {
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
+
+  const mapMeshesToColors = () => {
+    const meshColorMapping = {};
+
+    if (Array.isArray(product.meshes)) {
+      product.meshes.forEach((mesh) => {
+        const meshId = mesh.id;
+        const meshName = mesh.name;
+
+        const colorEntry = colors.find((color) => color.meshId === meshId);
+
+        if (colorEntry) {
+          meshColorMapping[meshName] = colorEntry.color.color_name;
+        }
+      });
+    }
+
+    return meshColorMapping;
+  };
+
+  const formatString = (str) => {
+    return str
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  const meshColorMap = mapMeshesToColors();
 
   if (loading === "loading") return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;
@@ -115,6 +144,11 @@ const ProductScreen = () => {
               >
                 <span className="text-white font-medium">Customize</span>
               </button>
+              <div className="mt-4">
+                {Object.entries(meshColorMap).map(([mesh, color]) => (
+                  <p key={mesh}>{`${formatString(mesh)}: ${color}`}</p>
+                ))}
+              </div>
             </div>
           )}
           <p className="mb-4 text-gray-700">
