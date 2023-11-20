@@ -12,11 +12,17 @@ export const fetchSingleProduct = createAsyncThunk(
   }
 );
 
+
 export const fetchAllProducts = createAsyncThunk(
-  "products/fetchAllProducts",
-  async () => {
-    const { data } = await axios.get(`${API_URL}/api/products/`);
-    return data;
+  'allProducts/fetchAll',
+  async (keyword = '', { rejectWithValue }) => {
+    try {
+      const endpoint = `${API_URL}/api/products/?keyword=${keyword}`;
+      const response = await axios.get(endpoint);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response && error.response.data.message ? error.response.data.message : error.message);
+    }
   }
 );
 

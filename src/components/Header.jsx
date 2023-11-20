@@ -4,7 +4,7 @@ import { logoutUser } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import { resetOrders } from "../features/orderSlice";
 import { Search, ShoppingCart } from "react-feather";
-
+import SearchBox from "./SearchBox";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -28,6 +28,10 @@ const Header = () => {
             LOGO
           </Link>
         </div>
+        <div className="w-1/2">
+          <SearchBox />
+        </div>
+
         <div className="flex items-center">
           <ul className="flex items-center gap-4">
             <li>

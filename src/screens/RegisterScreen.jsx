@@ -9,6 +9,8 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ const RegisterScreen = () => {
         navigate('/'); 
       })
       .catch(error => {
-        console.error('Registration failed', error);
+        setErrorMessage(error.error);
       });
   };
 
@@ -34,7 +36,7 @@ const RegisterScreen = () => {
 
   return (
     <Box className="container mx-auto px-4 mt-8 w-1/3" component={Paper} elevation={3} padding={4}>
-      {user.error && <Alert severity="error">{user.error}</Alert>}
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <form onSubmit={handleSubmit}>
         <TextField 
           label="Name"
