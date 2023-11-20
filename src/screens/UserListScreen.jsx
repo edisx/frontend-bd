@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUsers, deleteUser } from '../features/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CircularProgress,
   Alert,
@@ -12,23 +12,32 @@ import {
   TableHead,
   TableRow,
   Button,
-  Paper
+  Paper,
+  Pagination
 } from '@mui/material';
 
 const UserListScreen = () => {
   const dispatch = useDispatch();
-  const userAll = useSelector((state) => state.user);
-  const { usersList, loading, error } = userAll;
   const navigate = useNavigate();
+  const location = useLocation();
+  const userAll = useSelector((state) => state.user);
+  const { usersList, loading, error, page, pages } = userAll; // Assuming pages info is available in Redux state
   const userInfo = useSelector((state) => state.user.userInfo);
+
+  const searchParams = new URLSearchParams(location.search);
+  const currentPage = parseInt(searchParams.get("page")) || 1;
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(getUsers());
+      dispatch(getUsers({ page: currentPage }));
     } else {
       navigate('/login');
     }
-  }, [dispatch, navigate, userInfo]);
+  }, [dispatch, navigate, userInfo, currentPage]);
+
+  const handlePageChange = (event, value) => {
+    navigate(`/admin/userList?page=${value}`);
+  };
 
   const handleEditClick = (id) => {
     navigate(`/admin/user/${id}/edit`);
@@ -47,7 +56,8 @@ const UserListScreen = () => {
   if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <Paper className="p-4">
+    <div>
+      <Paper className="p-4">
       <TableContainer>
         <Table>
           <TableHead>
@@ -88,7 +98,15 @@ const UserListScreen = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+      </Paper>
+      <div className="flex justify-center mt-24 mb-4">
+        <Pagination
+          count={pages}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
+      </div>
+    </div>
   );
 };
 

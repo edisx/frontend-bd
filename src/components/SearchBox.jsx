@@ -10,7 +10,7 @@ const SearchBox = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
-      navigate(`/?keyword=${keyword}`);
+      navigate(`/?keyword=${keyword}&page=1`);
     } else {
       navigate("/");
     }

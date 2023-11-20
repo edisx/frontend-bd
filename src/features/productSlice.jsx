@@ -12,16 +12,16 @@ export const fetchSingleProduct = createAsyncThunk(
   }
 );
 
-
 export const fetchAllProducts = createAsyncThunk(
-  'allProducts/fetchAll',
-  async (keyword = '', { rejectWithValue }) => {
+  "allProducts/fetchAll",
+  async ({ keyword = "", page = 1 }, { rejectWithValue }) => {
     try {
-      const endpoint = `${API_URL}/api/products/?keyword=${keyword}`;
+      const endpoint = `${API_URL}/api/products/?keyword=${keyword}&page=${page}`;
       const response = await axios.get(endpoint);
+      console.log(response.data);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response && error.response.data.message ? error.response.data.message : error.message);
+      return rejectWithValue(error.response.error);
     }
   }
 );
@@ -49,13 +49,13 @@ export const fetchSingleProductForAdmin = createAsyncThunk(
 
 export const fetchAllProductsForAdmin = createAsyncThunk(
   "admin/products/fetchAllProducts",
-  async (_, { rejectWithValue, getState }) => {
+  async ({ page = 1 }, { rejectWithValue, getState }) => {
     const {
       user: { userInfo },
     } = getState();
 
     try {
-      const { data } = await axios.get(`${API_URL}/api/products/`, {
+      const { data } = await axios.get(`${API_URL}/api/products/?page=${page}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.token}`,
@@ -67,6 +67,7 @@ export const fetchAllProductsForAdmin = createAsyncThunk(
     }
   }
 );
+
 
 export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
@@ -82,7 +83,7 @@ export const deleteProduct = createAsyncThunk(
           Authorization: `Bearer ${userInfo.token}`,
         },
       });
-      return id; // we return the ID on successful deletion so that you can potentially remove it from the client-side list immediately.
+      return id;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -195,6 +196,8 @@ const productSlice = createSlice({
     products: [],
     loading: "idle",
     error: null,
+    page: 1,
+    pages: 0,
   },
   extraReducers: (builder) => {
     // Single Product Handlers
@@ -217,8 +220,9 @@ const productSlice = createSlice({
     });
     builder.addCase(fetchAllProducts.fulfilled, (state, action) => {
       state.loading = "idle";
-      state.products = action.payload;
-      state.error = null;
+      state.products = action.payload.products;
+      state.page = action.payload.page;
+      state.pages = action.payload.pages;
     });
     builder.addCase(fetchAllProducts.rejected, (state, action) => {
       state.loading = "idle";
@@ -245,8 +249,9 @@ const productSlice = createSlice({
     });
     builder.addCase(fetchAllProductsForAdmin.fulfilled, (state, action) => {
       state.loading = "idle";
-      state.products = action.payload;
-      state.error = null;
+      state.products = action.payload.products;
+      state.page = action.payload.page;
+      state.pages = action.payload.pages;
     });
     builder.addCase(fetchAllProductsForAdmin.rejected, (state, action) => {
       state.loading = "idle";

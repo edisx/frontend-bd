@@ -17,6 +17,8 @@ const defaultState = {
   userDetail: {},
   loading: "idle",
   error: null,
+  page: 1,
+  pages: 1,
 };
 
 // Async action to log in user
@@ -102,13 +104,13 @@ export const updateUserProfile = createAsyncThunk(
 // Async action to get all users
 export const getUsers = createAsyncThunk(
   'user/getUsers',
-  async (_,{ rejectWithValue, getState }) => {
+  async ({ page = 1 }, { rejectWithValue, getState }) => { 
     const {
       user: { userInfo },
     } = getState();
     try {
       const response = await axios.get(
-        `${API_URL}/api/users/`,
+        `${API_URL}/api/users/?page=${page}`, 
         {
           headers: {
             'Content-Type': 'application/json',
@@ -276,7 +278,9 @@ const userSlice = createSlice({
     });
     builder.addCase(getUsers.fulfilled, (state, action) => {
       state.loading = "idle";
-      state.usersList = action.payload;
+      state.usersList = action.payload.users;
+      state.page = action.payload.page;
+      state.pages = action.payload.pages;
       state.error = null;
     });
     builder.addCase(getUsers.rejected, (state, action) => {

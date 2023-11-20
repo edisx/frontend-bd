@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import {
   TwitterIcon,
   DiscordIcon,
@@ -8,7 +9,10 @@ import {
   InstagramIcon,
 } from "./Icons";
 
-const StickyFooter = () => {
+const Footer = () => {
+  const location = useLocation();
+  const isDefaultRoute = ["/", "/admin/productList", "/admin/userList", "/admin/categoryList", "/admin/orderList"].includes(location.pathname);
+
   const Links = {
     "Cookie Preferences": "/",
     "Privacy Policy": "/",
@@ -51,7 +55,7 @@ const StickyFooter = () => {
   };
 
   return (
-    <div className="bg-black mt-96">
+    <div className={`bg-black ${!isDefaultRoute ? 'mt-96' : ''}`}>
       <footer className="w-full h-auto md:h-16 flex flex-col md:flex-row items-center justify-between mt-4 md:mt-12 mb-4 md:mb-16 px-4 md:px-12">
         {/* div links */}
         <div className="flex flex-row justify-center items-center gap-2 md:gap-4 my-2 md:my-0">
@@ -88,4 +92,4 @@ const StickyFooter = () => {
   );
 };
 
-export default StickyFooter;
+export default Footer;

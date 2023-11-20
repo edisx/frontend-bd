@@ -5,7 +5,7 @@ import {
   deleteProduct,
   createProduct
 } from '../features/productSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CircularProgress,
   Alert,
@@ -16,23 +16,29 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Pagination
 } from '@mui/material';
 
 const ProductListScreen = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const productAll = useSelector((state) => state.products);
   const userInfo = useSelector((state) => state.user.userInfo);
-  const { products, loading, error } = productAll;
+  const { products, loading, error, page, pages } = productAll;
   const navigate = useNavigate();
+
+  const searchParams = new URLSearchParams(location.search);
+  const currentPage = parseInt(searchParams.get("page")) || 1;
+
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(fetchAllProductsForAdmin());
+      dispatch(fetchAllProductsForAdmin({ page: currentPage }));
     } else {
       navigate('/login');
     }
-  }, [dispatch, navigate, userInfo]);
+  }, [dispatch, navigate, userInfo, currentPage]);
 
   const handleEditClick = (id) => {
     navigate(`/admin/product/${id}/edit`);
@@ -49,6 +55,10 @@ const ProductListScreen = () => {
 
   const handleCreateClick = () => {
     dispatch(createProduct());
+  };
+
+  const handlePageChange = (event, value) => {
+    navigate(`/admin/productList?page=${value}`);
   };
 
   if (loading === 'loading') return <CircularProgress />;
@@ -75,7 +85,9 @@ const ProductListScreen = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
+            {products &&
+              products.length > 0 &&
+              products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.id}</TableCell>
                 <TableCell>
@@ -113,6 +125,13 @@ const ProductListScreen = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="flex justify-center mt-24 mb-4">
+        <Pagination
+          count={pages}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

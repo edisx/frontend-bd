@@ -102,19 +102,18 @@ export const getMyOrders = createAsyncThunk(
 
 export const getAllOrders = createAsyncThunk(
   'order/getAllOrders',
-  async (_, { rejectWithValue, getState }) => {
+  async ({ page = 1 }, { rejectWithValue, getState }) => {
     const {
       user: { userInfo },
     } = getState();
+
     try {
-      const response = await axios.get(
-        `${API_URL}/api/orders/`,
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+      const endpoint = `${API_URL}/api/orders/?page=${page}`;
+      const response = await axios.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -154,6 +153,8 @@ const orderSlice = createSlice({
     orders: [],        
     loading: "idle",
     error: null,
+    page: 1,
+    pages: 1,
   },
   reducers: {
     resetOrders: (state) => {
@@ -196,8 +197,9 @@ const orderSlice = createSlice({
     });
     builder.addCase(getAllOrders.fulfilled, (state, action) => {
       state.loading = "idle";
-      state.orders = action.payload;
-      state.error = null;
+      state.orders = action.payload.orders;
+      state.page = action.payload.page;
+      state.pages = action.payload.pages;
     });
     builder.addCase(getAllOrders.rejected, (state, action) => {
       state.loading = "idle";
