@@ -43,6 +43,16 @@ const OrderListScreen = () => {
     navigate(`/admin/orderList?page=${value}`);
   };
 
+  // date only , no time
+  const formatLithuanianDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+
   return (
     <div>
       <Paper className="p-5">
@@ -74,28 +84,29 @@ const OrderListScreen = () => {
                     <TableCell>{order.id}</TableCell>
                     <TableCell>{order.user.name}</TableCell>
                     <TableCell>
-                      {new Date(order.created_at).toLocaleDateString()}
+                      {formatLithuanianDate(order.created_at)}
                     </TableCell>
                     <TableCell>{`$${parseFloat(order.total_price).toFixed(
                       2
                     )}`}</TableCell>
                     <TableCell>
                       {order.is_paid ? (
-                        new Date(order.paid_at).toLocaleDateString()
+                        formatLithuanianDate(order.paid_at)
+                        
                       ) : (
                         <X className="text-red-500" />
                       )}
                     </TableCell>
                     <TableCell>
                       {order.is_shipped ? (
-                        new Date(order.shipped_at).toLocaleDateString()
+                        formatLithuanianDate(order.shipped_at)
                       ) : (
                         <X className="text-red-500" />
                       )}
                     </TableCell>
                     <TableCell>
                       {order.is_delivered ? (
-                        new Date(order.delivered_at).toLocaleDateString()
+                        formatLithuanianDate(order.delivered_at)
                       ) : (
                         <X className="text-red-500" />
                       )}
