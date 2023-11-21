@@ -29,11 +29,15 @@ const ProductEditScreen = () => {
         <div className="w-1/2 p-4">
           <ProductText />
         </div>
+        {userInfo && userInfo.isSuperuser && (
         <div className="w-1/2 p-4">
           <ProductImages />
         </div>
+        )}
       </div>
+      {userInfo && userInfo.isSuperuser && (
       <ProductModel />
+      )}
     </>
   );
 };

@@ -129,6 +129,7 @@ const ProfileScreen = () => {
                 <TableCell>Date</TableCell>
                 <TableCell>Total</TableCell>
                 <TableCell>Paid</TableCell>
+                <TableCell>Shipped</TableCell>
                 <TableCell>Delivered</TableCell>
               </TableRow>
             </TableHead>
@@ -148,6 +149,9 @@ const ProfileScreen = () => {
                   <TableCell>
                     {order.is_paid ? formatDate(order.paid_at) : <X />}
                   </TableCell>
+                  <TableCell>
+                      {order.is_shipped ? formatDate(order.shipped_at) : <X />}
+                    </TableCell>
                   <TableCell>
                     {order.is_delivered ? (
                       formatDate(order.delivered_at)

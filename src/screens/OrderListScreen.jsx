@@ -63,6 +63,7 @@ const OrderListScreen = () => {
                   <TableCell>Date</TableCell>
                   <TableCell>Total</TableCell>
                   <TableCell>Paid</TableCell>
+                  <TableCell>Shipped</TableCell>
                   <TableCell>Delivered</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
@@ -81,6 +82,13 @@ const OrderListScreen = () => {
                     <TableCell>
                       {order.is_paid ? (
                         new Date(order.paid_at).toLocaleDateString()
+                      ) : (
+                        <X className="text-red-500" />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {order.is_shipped ? (
+                        new Date(order.shipped_at).toLocaleDateString()
                       ) : (
                         <X className="text-red-500" />
                       )}

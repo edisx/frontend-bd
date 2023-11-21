@@ -18,7 +18,6 @@ export const fetchAllProducts = createAsyncThunk(
     try {
       const endpoint = `${API_URL}/api/products/?keyword=${keyword}&page=${page}`;
       const response = await axios.get(endpoint);
-      console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.error);

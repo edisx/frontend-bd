@@ -4,7 +4,12 @@ import { getOrderById } from "../features/orderSlice";
 import { useParams } from "react-router-dom";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { payOrder } from "../features/orderSlice";
-import { deliverOrder } from "../features/orderSlice";
+import {
+  updateOrderToShipped,
+  resetOrderToUnshipped,
+  updateOrderToDelivered,
+  resetOrderToUndelivered,
+} from "../features/orderSlice";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress, Alert } from "@mui/material";
 import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
@@ -50,8 +55,20 @@ const OrderScreen = () => {
     });
   };
 
+  const handleMarkAsShipped = () => {
+    dispatch(updateOrderToShipped(orderData.id));
+  };
+
+  const handleUnmarkAsShipped = () => {
+    dispatch(resetOrderToUnshipped(orderData.id));
+  };
+
   const handleMarkAsDelivered = () => {
-    dispatch(deliverOrder(orderData.id));
+    dispatch(updateOrderToDelivered(orderData.id));
+  };
+
+  const handleUnmarkAsDelivered = () => {
+    dispatch(resetOrderToUndelivered(orderData.id));
   };
 
   const getColorMappingString = (colors) => {
@@ -91,6 +108,13 @@ const OrderScreen = () => {
             } font-semibold`}
           >
             {orderData.is_delivered ? "Delivered" : "Not Delivered"}
+          </p>
+          <p
+            className={`${
+              orderData.is_shipped ? "text-green-500" : "text-red-500"
+            } font-semibold`}
+          >
+            {orderData.is_shipped ? "Shipped" : "Not Shipped"}
           </p>
         </div>
 
@@ -182,19 +206,41 @@ const OrderScreen = () => {
           </div>
         )}
         {/* if user is admin and order is paid */}
-        {userInfo &&
-          userInfo.isAdmin &&
-          orderData.is_paid &&
-          !orderData.is_delivered && (
-            <div className="mt-4">
+        {userInfo && userInfo.isAdmin && orderData.is_paid && (
+          <div className="mt-4 space-y-2">
+            {orderData.is_shipped ? (
+              <button
+                onClick={handleUnmarkAsShipped}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-4 rounded"
+              >
+                Unmark As Shipped
+              </button>
+            ) : (
+              <button
+                onClick={handleMarkAsShipped}
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
+                Mark As Shipped
+              </button>
+            )}
+
+            {orderData.is_delivered ? (
+              <button
+                onClick={handleUnmarkAsDelivered}
+                className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
+              >
+                Unmark As Delivered
+              </button>
+            ) : (
               <button
                 onClick={handleMarkAsDelivered}
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+                className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
               >
                 Mark As Delivered
               </button>
-            </div>
-          )}
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

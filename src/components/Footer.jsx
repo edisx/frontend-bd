@@ -11,7 +11,7 @@ import {
 
 const Footer = () => {
   const location = useLocation();
-  const isDefaultRoute = ["/", "/admin/productList", "/admin/userList", "/admin/categoryList", "/admin/orderList"].includes(location.pathname);
+  const isDefaultRoute = ["/", "/admin/productList", "/admin/userList", "/admin/categoryList", "/admin/orderList", "/admin/logs"].includes(location.pathname);
 
   const Links = {
     "Cookie Preferences": "/",

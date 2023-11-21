@@ -121,8 +121,8 @@ export const getAllOrders = createAsyncThunk(
   }
 );
 
-export const deliverOrder = createAsyncThunk(
-  'order/deliverOrder',
+export const updateOrderToDelivered = createAsyncThunk(
+  'order/updateOrderToDelivered',
   async (orderId, { rejectWithValue, getState }) => {
     const {
       user: { userInfo },
@@ -143,6 +143,72 @@ export const deliverOrder = createAsyncThunk(
     }
   }
 );
+
+export const resetOrderToUndelivered = createAsyncThunk(
+  'order/resetOrderToUndelivered',
+  async (orderId, { rejectWithValue, getState }) => {
+    const { user: { userInfo } } = getState();
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/orders/${orderId}/undeliver/`, 
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateOrderToShipped = createAsyncThunk(
+  'order/updateOrderToShipped',
+  async (orderId, { rejectWithValue, getState }) => {
+    const { user: { userInfo } } = getState();
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/orders/${orderId}/shipped/`, 
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+
+export const resetOrderToUnshipped = createAsyncThunk(
+  'order/resetOrderToUnshipped',
+  async (orderId, { rejectWithValue, getState }) => {
+    const { user: { userInfo } } = getState();
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/orders/${orderId}/unshipped/`, 
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+
 
 
 
@@ -206,15 +272,56 @@ const orderSlice = createSlice({
       state.error = action.payload;
     });
     // deliver order
-    builder.addCase(deliverOrder.pending, (state, action) => {
+    builder.addCase(updateOrderToDelivered.pending, (state, action) => {
       state.loading = "loading";
     });
-    builder.addCase(deliverOrder.fulfilled, (state, action) => {
+    builder.addCase(updateOrderToDelivered.fulfilled, (state, action) => {
       state.currentOrder.is_delivered = true;
       state.loading = "idle";
       state.error = null;
     });
-    builder.addCase(deliverOrder.rejected, (state, action) => {
+    builder.addCase(updateOrderToDelivered.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload;
+    });
+    // reset order to undelivered
+    builder.addCase(resetOrderToUndelivered.pending, (state, action) => {
+      state.loading = "loading";
+    });
+    builder.addCase(resetOrderToUndelivered.fulfilled, (state, action) => {
+      state.currentOrder.is_delivered = false;
+      state.currentOrder.delivered_at = null;
+      state.loading = "idle";
+      state.error = null;
+    });
+    builder.addCase(resetOrderToUndelivered.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload;
+    });
+    // update order to shipped
+    builder.addCase(updateOrderToShipped.pending, (state, action) => {
+      state.loading = "loading";
+    });
+    builder.addCase(updateOrderToShipped.fulfilled, (state, action) => {
+      state.currentOrder.is_shipped = true;
+      state.loading = "idle";
+      state.error = null;
+    });
+    builder.addCase(updateOrderToShipped.rejected, (state, action) => {
+      state.loading = "idle";
+      state.error = action.payload;
+    });
+    // reset order to unshipped
+    builder.addCase(resetOrderToUnshipped.pending, (state, action) => {
+      state.loading = "loading";
+    });
+    builder.addCase(resetOrderToUnshipped.fulfilled, (state, action) => {
+      state.currentOrder.is_shipped = false;
+      state.currentOrder.shipped_at = null;
+      state.loading = "idle";
+      state.error = null;
+    });
+    builder.addCase(resetOrderToUnshipped.rejected, (state, action) => {
       state.loading = "idle";
       state.error = action.payload;
     });

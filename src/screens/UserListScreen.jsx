@@ -28,7 +28,7 @@ const UserListScreen = () => {
   const currentPage = parseInt(searchParams.get("page")) || 1;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
+    if (userInfo && userInfo.isSuperuser) {
       dispatch(getUsers({ page: currentPage }));
     } else {
       navigate('/login');
@@ -65,7 +65,7 @@ const UserListScreen = () => {
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Admin</TableCell>
+              <TableCell>Employee</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>

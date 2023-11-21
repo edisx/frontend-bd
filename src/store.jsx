@@ -7,6 +7,7 @@ import categoryReducer from "./features/categorySlice";
 import sizeReducer from "./features/sizeSlice";
 import colorReducer from "./features/colorSlice";
 import orderReducer from "./features/orderSlice";
+import logReducer from "./features/logSlice";
 
 
 
@@ -21,6 +22,7 @@ const store = configureStore({
     sizes: sizeReducer,
     colors: colorReducer,
     order: orderReducer,
+    logs: logReducer,
 
 
 

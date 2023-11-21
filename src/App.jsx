@@ -25,6 +25,7 @@ import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
 import OrderListScreen from "./screens/OrderListScreen";
+import LogListScreen from "./screens/LogListScreen";
 
 const Layout = () => {
   const location = useLocation();
@@ -51,6 +52,7 @@ const Layout = () => {
           <Route path="/admin/userlist" element={<UserListScreen />} />
           <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
           <Route path="/admin/categorylist" element={<CategoryListScreen />} />
+          <Route path="/admin/logs" element={<LogListScreen />} />
           <Route path="/shipping" element={<ShippingScreen />} />
           <Route path="/payment" element={<PaymentScreen />} />
           <Route path="/placeorder" element={<PlaceOrderScreen />} />

@@ -96,7 +96,7 @@ const UserEditScreen = () => {
               onChange={(e) => setIsAdmin(e.target.checked)}
             />
           }
-          label="Is Admin"
+          label="Is Employee"
           margin="normal"
         />
         <Button

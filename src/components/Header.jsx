@@ -54,7 +54,7 @@ const Header = () => {
             {userInfo && userInfo.isAdmin && (
               <li className="group relative">
                 <span className="block px-4 py-2 hover:bg-gray-700 rounded transition duration-200 cursor-pointer">
-                  Admin
+                  Management
                 </span>
                 <ul className="absolute left-0 w-full mt-[-0.5px] bg-black border border-gray-700 rounded shadow-md opacity-0 group-hover:opacity-100 hidden group-hover:block z-10 transition-opacity duration-150">
                   <li className="px-4 py-2 hover:bg-gray-700">
@@ -65,22 +65,27 @@ const Header = () => {
                       Products List
                     </Link>
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-700">
-                    <Link
-                      to="/admin/userList"
-                      className="hover:text-white transition duration-200"
-                    >
-                      Users List
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-700">
-                    <Link
-                      to="/admin/categoryList"
-                      className="hover:text-white transition duration-200"
-                    >
-                      Categories List
-                    </Link>
-                  </li>
+                  {userInfo && userInfo.isSuperuser && (
+                    <>
+                      <li className="px-4 py-2 hover:bg-gray-700">
+                        <Link
+                          to="/admin/userList"
+                          className="hover:text-white transition duration-200"
+                        >
+                          Users List
+                        </Link>
+                      </li>
+
+                      <li className="px-4 py-2 hover:bg-gray-700">
+                        <Link
+                          to="/admin/categoryList"
+                          className="hover:text-white transition duration-200"
+                        >
+                          Categories List
+                        </Link>
+                      </li>
+                    </>
+                  )}
                   <li className="px-4 py-2 hover:bg-gray-700">
                     <Link
                       to="/admin/orderList"
@@ -89,6 +94,16 @@ const Header = () => {
                       Orders List
                     </Link>
                   </li>
+                  {userInfo && userInfo.isSuperuser && (
+                    <li className="px-4 py-2 hover:bg-gray-700">
+                      <Link
+                        to="/admin/logs"
+                        className="hover:text-white transition duration-200"
+                      >
+                        Logs
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </li>
             )}

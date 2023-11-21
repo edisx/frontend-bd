@@ -67,9 +67,11 @@ const ProductListScreen = () => {
   return (
     <div className="m-4">
       <div className="mb-4">
+      {userInfo && userInfo.isSuperuser && (
         <Button variant="contained" color="primary" onClick={handleCreateClick}>
           Create Product
         </Button>
+      )}
       </div>
       <TableContainer component={Paper}>
         <Table>
@@ -112,6 +114,7 @@ const ProductListScreen = () => {
                   >
                     Edit
                   </Button>
+                  {userInfo && userInfo.isSuperuser && (
                   <Button
                     variant="contained"
                     color="error"
@@ -119,6 +122,7 @@ const ProductListScreen = () => {
                   >
                     Delete
                   </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -251,7 +251,7 @@ const ProductScreen = () => {
               <p className="text-gray-700">{review.created_at.split("T")[0]}</p>
 
               {userInfo &&
-                (review.user === userInfo.id || userInfo.isAdmin) && (
+                (review.user === userInfo.id || userInfo.isSuperuser) && (
                   <button
                     onClick={() => deleteReview(review.id)}
                     className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300 hidden group-hover:block"
