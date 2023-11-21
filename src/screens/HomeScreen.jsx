@@ -15,6 +15,7 @@ const HomeScreen = () => {
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get("keyword") || "";
   const page = parseInt(searchParams.get("page")) || 1;
+  const category_id = parseInt(searchParams.get("category_id")) || "";
 
   const productAll = useSelector((state) => state.products);
   const {
@@ -26,8 +27,8 @@ const HomeScreen = () => {
   } = productAll;
 
   useEffect(() => {
-    dispatch(fetchAllProducts({ keyword, page }));
-  }, [dispatch, keyword, page]);
+    dispatch(fetchAllProducts({ keyword, page , category_id}));
+  }, [dispatch, keyword, page, category_id]);
 
   const handlePageChange = (event, value) => {
     navigate(`/?keyword=${keyword}&page=${value}`);

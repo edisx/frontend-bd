@@ -14,13 +14,19 @@ export const fetchSingleProduct = createAsyncThunk(
 
 export const fetchAllProducts = createAsyncThunk(
   "allProducts/fetchAll",
-  async ({ keyword = "", page = 1 }, { rejectWithValue }) => {
+  async ({ keyword = "", category_id = "", page = 1 }, { rejectWithValue }) => {
     try {
-      const endpoint = `${API_URL}/api/products/?keyword=${keyword}&page=${page}`;
+      let endpoint = `${API_URL}/api/products/?page=${page}`;
+      if (keyword) {
+        endpoint += `&keyword=${keyword}`;
+      }
+      if (category_id) {
+        endpoint += `&category_id=${category_id}`;
+      }
       const response = await axios.get(endpoint);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.error);
+      return rejectWithValue(error.response.data.error);
     }
   }
 );

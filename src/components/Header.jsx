@@ -1,14 +1,18 @@
 import { NavLink, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import { resetOrders } from "../features/orderSlice";
 import { Search, ShoppingCart } from "react-feather";
 import SearchBox from "./SearchBox";
+import { fetchAllCategories } from "../features/categorySlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user);
+  const { categories } = useSelector((state) => state.categories);
+  console.log(categories);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,6 +20,10 @@ const Header = () => {
     dispatch(resetOrders());
     navigate("/");
   };
+
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
 
   return (
     <div className="bg-black h-16 flex items-center justify-center">
@@ -41,6 +49,30 @@ const Header = () => {
               >
                 Home
               </NavLink>
+            </li>
+            {/* category dropdown menu */}
+            <li>
+              <div className="group relative">
+                <span className="block px-6 py-2 hover:bg-gray-700 rounded transition duration-200 cursor-pointer">
+                  Categories
+                </span>
+                <ul className="absolute left-0 w-full mt-[-0.5px] bg-black border border-gray-700 rounded shadow-md opacity-0 group-hover:opacity-100 hidden group-hover:block z-10 transition-opacity duration-150">
+                  {categories &&
+                    categories.map((category) => (
+                      <li
+                        className="px-4 py-2 hover:bg-gray-700"
+                        key={category.id}
+                      >
+                        <Link
+                          to={`/?category_id=${category.id}&page=1`}
+                          className="hover:text-white transition duration-200"
+                        >
+                          {category.name}
+                        </Link>
+                      </li>
+                    ))}
+                </ul>
+              </div>
             </li>
             <li>
               <NavLink

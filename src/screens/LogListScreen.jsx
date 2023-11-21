@@ -27,7 +27,6 @@ const LogListScreen = () => {
 
   useEffect(() => {
     if (userInfo && userInfo.isSuperuser) {
-      console.log(currentPage);
       dispatch(fetchActionLogs({ page: currentPage }));
     } else {
       navigate("/login");
