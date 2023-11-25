@@ -12,7 +12,6 @@ const Header = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user);
   const { categories } = useSelector((state) => state.categories);
-  console.log(categories);
   const navigate = useNavigate();
 
   const handleLogout = () => {

@@ -9,7 +9,7 @@ const Viewer = (props) => {
   if (!props.model) {
     return <h1>NO MODEL</h1>;
   }
-  const modelURL = `${API_URL}${props.model}`;
+  const modelURL = `${props.model}`;
 
   const { scene } = useGLTF(modelURL);
 

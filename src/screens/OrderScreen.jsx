@@ -10,6 +10,7 @@ import {
   updateOrderToDelivered,
   resetOrderToUndelivered,
 } from "../features/orderSlice";
+import { getSizes } from "../features/sizeSlice";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress, Alert } from "@mui/material";
 import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
@@ -22,12 +23,14 @@ const OrderScreen = () => {
   // Fetch order data when the component mounts
   useEffect(() => {
     dispatch(getOrderById(id));
+    dispatch(getSizes());
   }, [dispatch, id]);
 
   // Access the order data from the Redux store
   const orderData = useSelector((state) => state.order.currentOrder);
   const error = useSelector((state) => state.order.error?.detail);
   const userInfo = useSelector((state) => state.user.userInfo);
+  const sizes = useSelector((state) => state.sizes.sizes);
 
   const orderTotalRef = useRef(orderData?.total_price);
 
@@ -37,8 +40,6 @@ const OrderScreen = () => {
 
   useEffect(() => {
     if (error) {
-      console.log(error);
-      console.log(error.status);
       navigate("/");
     }
   }, [error, navigate]);
@@ -54,6 +55,7 @@ const OrderScreen = () => {
       ],
     });
   };
+  
 
   const handleMarkAsShipped = () => {
     dispatch(updateOrderToShipped(orderData.id));
@@ -82,6 +84,11 @@ const OrderScreen = () => {
     return mappingString.length > 20
       ? `${mappingString.substring(0, 100)}...`
       : mappingString;
+  };
+
+  const getSizeFromId = (sizeId) => {
+    const size = sizes.find((size) => size.id === sizeId);
+    return size;
   };
 
   if (!orderData) {
@@ -150,7 +157,7 @@ const OrderScreen = () => {
                 <CardContent>
                   <Typography variant="subtitle1">{item.name}</Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Size: {item.size.size} -{" "}
+                    Size: {getSizeFromId(item.size).size}
                     {getColorMappingString(item.colors)}
                   </Typography>
                 </CardContent>
