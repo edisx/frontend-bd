@@ -1,0 +1,56 @@
+name: Build and Deploy
+on:
+  push:
+    branches: [master]
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    env:
+      # domain name of your website
+      BUCKET: www.batuparduotuve.com
+      # directory of static files
+      DIST: dist
+      # region of s3 bucket
+      AWS_REGION: eu-north-1
+      # id of your cloudfront distribution
+      DIST_ID: EP69F6WP2E2KN
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: actions/setup-node@v3
+        with:
+          # node version may be the reason why the build fails
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: |
+          node --version
+          npm ci
+
+        # test with vitest
+      - name: Test
+        run: |
+          npm run test
+
+      - name: Build Static Website
+        run: npm run build
+
+      - name: Copy files to the production website with the AWS CLI
+        run: |
+          aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.DIST_ID }} \
+            --paths "/*"

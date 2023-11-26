@@ -26,7 +26,7 @@ export const fetchAllProducts = createAsyncThunk(
       const response = await axios.get(endpoint);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.error);
+      return rejectWithValue("Server Error");
     }
   }
 );
