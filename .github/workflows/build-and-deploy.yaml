@@ -30,17 +30,23 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           # node version may be the reason why the build fails
-          node-version: '19.8.1'
+          node-version: "20"
 
       - name: Install Dependencies
         run: |
           node --version
           npm ci
 
+        # set environment variables
+      - name: Set Environment Variables
+        run: |
+          echo "VITE_API_URL=https://api.batuparduotuve.com" >> $GITHUB_ENV
+          echo "VITE_PROXY=False" >> $GITHUB_ENV
+
         # test with vitest
-    #   - name: Test
-    #     run: |
-    #       npm run test
+      - name: Test
+        run: |
+          npm run test
 
       - name: Build Static Website
         run: npm run build
