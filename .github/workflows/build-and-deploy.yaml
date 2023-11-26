@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # domain name of your website
-      BUCKET: www.batuparduotuve.com
+      BUCKET: batuparduotuve-frontend
       # directory of static files
       DIST: dist
       # region of s3 bucket
