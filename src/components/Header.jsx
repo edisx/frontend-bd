@@ -50,6 +50,7 @@ const Header = () => {
               </NavLink>
             </li>
             {/* category dropdown menu */}
+            { categories && categories.length > 0 && (
             <li>
               <div className="group relative">
                 <span className="block px-6 py-2 hover:bg-gray-700 rounded transition duration-200 cursor-pointer">
@@ -73,6 +74,7 @@ const Header = () => {
                 </ul>
               </div>
             </li>
+            )}
             <li>
               <NavLink
                 to="/cart"
