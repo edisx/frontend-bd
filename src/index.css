@@ -17,3 +17,6 @@
   border: 2px solid white;
 }
 
+.svg-white {
+  filter: brightness(0) invert(1);
+}

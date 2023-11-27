@@ -32,7 +32,13 @@ const Header = () => {
             to="/"
             className="text-xl hover:text-white transition duration-200"
           >
-            LOGO
+            <img
+              src="/shoe.svg"
+              alt="Shoe"
+              className="inline-block mr-2 svg-white"
+              style={{ width: '30px', height: '30px' }}
+            />
+            ShoeShop
           </Link>
         </div>
         <div className="w-1/2">
@@ -50,30 +56,30 @@ const Header = () => {
               </NavLink>
             </li>
             {/* category dropdown menu */}
-            { categories && categories.length > 0 && (
-            <li>
-              <div className="group relative">
-                <span className="block px-6 py-2 hover:bg-gray-700 rounded transition duration-200 cursor-pointer">
-                  Categories
-                </span>
-                <ul className="absolute left-0 w-full mt-[-0.5px] bg-black border border-gray-700 rounded shadow-md opacity-0 group-hover:opacity-100 hidden group-hover:block z-10 transition-opacity duration-150">
-                  {categories &&
-                    categories.map((category) => (
-                      <li
-                        className="px-4 py-2 hover:bg-gray-700"
-                        key={category.id}
-                      >
-                        <Link
-                          to={`/?category_id=${category.id}&page=1`}
-                          className="hover:text-white transition duration-200"
+            {categories && categories.length > 0 && (
+              <li>
+                <div className="group relative">
+                  <span className="block px-6 py-2 hover:bg-gray-700 rounded transition duration-200 cursor-pointer">
+                    Categories
+                  </span>
+                  <ul className="absolute left-0 w-full mt-[-0.5px] bg-black border border-gray-700 rounded shadow-md opacity-0 group-hover:opacity-100 hidden group-hover:block z-10 transition-opacity duration-150">
+                    {categories &&
+                      categories.map((category) => (
+                        <li
+                          className="px-4 py-2 hover:bg-gray-700"
+                          key={category.id}
                         >
-                          {category.name}
-                        </Link>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            </li>
+                          <Link
+                            to={`/?category_id=${category.id}&page=1`}
+                            className="hover:text-white transition duration-200"
+                          >
+                            {category.name}
+                          </Link>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              </li>
             )}
             <li>
               <NavLink
