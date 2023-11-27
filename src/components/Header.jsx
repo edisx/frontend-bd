@@ -43,7 +43,7 @@ const Header = () => {
             </span>
           </Link>
         </div>
-        <div className="w-1/2">
+        <div className="w-1/3">
           <SearchBox />
         </div>
 
