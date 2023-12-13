@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
+import { Button } from "@mui/material";
 
 const ProductCart = ({ product, selectedSize }) => {
   const colors = useSelector((state) => state.colors);
@@ -51,12 +52,15 @@ const ProductCart = ({ product, selectedSize }) => {
 
   return (
     <div className="mt-4">
-      <button
+
+      <Button
         onClick={addToCartHandler}
-        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300"
+        variant="contained"
+        color="primary"
+        className="mt-4"
       >
         Add to Cart
-      </button>
+      </Button>
     </div>
   );
 };

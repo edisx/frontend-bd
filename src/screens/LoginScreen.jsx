@@ -32,7 +32,7 @@ const LoginScreen = () => {
   }, [user, navigate]);
 
   return (
-    <Box className="container mx-auto px-4 mt-8 w-1/3" component={Paper} elevation={3} padding={4}>
+    <div className="container mx-auto px-4 mt-8 w-1/3">
       {user.error && <Alert severity="error">{user.error}</Alert>}
       <form onSubmit={handleSubmit}>
         <TextField
@@ -73,7 +73,7 @@ const LoginScreen = () => {
           </Link>
         </Typography>
       </form>
-    </Box>
+    </div>
   );
 };
 

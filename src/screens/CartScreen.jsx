@@ -1,7 +1,7 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart } from '../features/cartSlice';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart } from "../features/cartSlice";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   List,
@@ -12,9 +12,8 @@ import {
   Paper,
   Box,
   Link,
-  Alert
-} from '@mui/material';
-
+  Alert,
+} from "@mui/material";
 
 const CartScreen = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -42,25 +41,46 @@ const CartScreen = () => {
     .reduce((acc, item) => acc + item.price * 1, 0)
     .toFixed(2);
 
-    return (
-      <Box className="m-4" display="flex" flexDirection={{ xs: "column", md: "row" }}>
+  return (
+    <div className="flex flex-col p-8">
+      <Typography variant="h5" gutterBottom className="mb-10">
+        Your Cart
+      </Typography>
+      <div className="flex flex-row">
         <Box flex={2} mr={2}>
-          <Typography variant="h5" gutterBottom>Your Cart</Typography>
           {cartItems.length === 0 ? (
             <Alert severity="info">Your cart is empty</Alert>
           ) : (
             <List>
               {cartItems.map((item, index) => (
-                <Paper key={index} elevation={3} sx={{ mb: 2, p: 3 }}>
-                  <ListItem>
+                <Paper key={index} elevation={1} sx={{ mb: 2, p: 3 }}>
+                  <ListItem className="gap-4">
                     <ListItemIcon>
-                      <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', borderRadius: '8px' }} />
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                        }}
+                      />
                     </ListItemIcon>
                     <ListItemText
-                      primary={<Link to={`/product/${item.product}`} style={{ textDecoration: 'none', color: '#1976d2' }}>{item.name}</Link>}
-                      secondary={`Size: ${item.size.size} - ${getColorMappingString(item.colors)}`}
+                      primary={
+                        <Link
+                          to={`/product/${item.product}`}
+                          style={{ textDecoration: "none", color: "#1976d2" }}
+                        >
+                          {item.name}
+                        </Link>
+                      }
+                      secondary={`Size: ${
+                        item.size.size
+                      } - ${getColorMappingString(item.colors)}`}
                     />
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{item.price} €</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      {item.price} €
+                    </Typography>
                     <Button
                       onClick={() => handleRemoveFromCart(item.uniqueId)}
                       color="error"
@@ -75,12 +95,16 @@ const CartScreen = () => {
             </List>
           )}
         </Box>
-  
+
         <Box flex={1} ml={2}>
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>Order Summary</Typography>
+          <div>
+            <Typography variant="h5" gutterBottom>
+              Order Summary
+            </Typography>
             <Box sx={{ my: 2 }}>
-              <Typography variant="body1" gutterBottom>Total: {total} €</Typography>
+              <Typography variant="body1" gutterBottom>
+                Total: {total} €
+              </Typography>
             </Box>
             <Button
               variant="contained"
@@ -92,10 +116,11 @@ const CartScreen = () => {
             >
               Proceed to Checkout
             </Button>
-          </Paper>
+          </div>
         </Box>
-      </Box>
-    );
-  };
-  
-  export default CartScreen;
+      </div>
+    </div>
+  );
+};
+
+export default CartScreen;

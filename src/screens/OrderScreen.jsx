@@ -13,7 +13,20 @@ import {
 import { getSizes } from "../features/sizeSlice";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress, Alert } from "@mui/material";
-import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Grid,
+  Typography,
+  Paper,
+  Box,
+  Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 
 const OrderScreen = () => {
   const dispatch = useDispatch();
@@ -55,7 +68,6 @@ const OrderScreen = () => {
       ],
     });
   };
-  
 
   const handleMarkAsShipped = () => {
     dispatch(updateOrderToShipped(orderData.id));
@@ -81,175 +93,196 @@ const OrderScreen = () => {
       })
       .join(", ");
 
-    return mappingString.length > 20
-      ? `${mappingString.substring(0, 100)}...`
-      : mappingString;
-  };
+    return mappingString;
+};
+
 
   const getSizeFromId = (sizeId) => {
-    const size = sizes.find((size) => size.id === sizeId);
-    return size;
+    return sizes.find((size) => size.id === sizeId) || { size: "" };
   };
 
-  if (!orderData) {
+  if (!orderData || !sizes) {
     return <CircularProgress />;
   }
 
   return (
-    <div className="flex flex-wrap md:flex-nowrap justify-between p-4 gap-4">
-      <div className="md:w-1/2 space-y-6">
+    <Box className="m-4">
+      {error && <Alert severity="error">{error}</Alert>}
+      <Box className="flex flex-col md:flex-row gap-8">
         {/* Shipping Information */}
-        <div className="bg-white p-4 rounded shadow-md border border-gray-200">
-          <h2 className="font-bold text-lg text-gray-800">Shipping</h2>
-          <p className="text-gray-600">
-            {orderData.shippingAddress.address},{" "}
-            {orderData.shippingAddress.city}
-          </p>
-          <p className="text-gray-600">
-            {orderData.shippingAddress.postal_code},{" "}
-            {orderData.shippingAddress.country}
-          </p>
-          <p
-            className={`${
-              orderData.is_delivered ? "text-green-500" : "text-red-500"
-            } font-semibold`}
-          >
-            {orderData.is_delivered ? "Delivered" : "Not Delivered"}
-          </p>
-          <p
-            className={`${
-              orderData.is_shipped ? "text-green-500" : "text-red-500"
-            } font-semibold`}
-          >
-            {orderData.is_shipped ? "Shipped" : "Not Shipped"}
-          </p>
-        </div>
-
-        {/* Payment Method */}
-        <div className="bg-white p-4 rounded shadow-md border border-gray-200">
-          <h2 className="font-bold text-lg text-gray-800">Payment Method</h2>
-          <p className="text-gray-600">{orderData.payment_method}</p>
-          <p
-            className={`${
-              orderData.is_paid ? "text-green-500" : "text-red-500"
-            } font-semibold`}
-          >
-            {orderData.is_paid ? "Paid" : "Not Paid"}
-          </p>
-        </div>
-
-        {/* Order Items */}
-        <Card className="bg-white p-4 rounded shadow-md border border-gray-200">
-          <Typography variant="h5" gutterBottom>
-            Order Items
-          </Typography>
-          {orderData.orderItems.map((item) => (
-            <Grid container spacing={2} key={item.id} className="py-2">
-              <Grid item xs={3}>
-                <CardMedia
-                  component="img"
-                  image={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 object-cover"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CardContent>
-                  <Typography variant="subtitle1">{item.name}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Size: {getSizeFromId(item.size).size}
-                    {getColorMappingString(item.colors)}
-                  </Typography>
-                </CardContent>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body1" color="textPrimary">
-                  ${item.price}
-                </Typography>
-              </Grid>
-            </Grid>
-          ))}
-        </Card>
-      </div>
-
-      {/* Order Summary */}
-      <div className="md:w-1/2 bg-gray-50 p-4 rounded shadow-md">
-        <h2 className="font-bold text-lg text-gray-800">Order Summary</h2>
-        <div className="space-y-2">
-          <p className="text-gray-600">
-            Items: $
-            {orderData.orderItems
-              .reduce((acc, item) => acc + parseFloat(item.price), 0)
-              .toFixed(2)}
-          </p>
-          <p className="text-gray-600">Shipping: ${orderData.shipping_price}</p>
-          <p className="text-gray-600">Tax: ${orderData.tax_price}</p>
-          <p className="text-gray-600 font-bold">
-            Total: ${orderData.total_price}
-          </p>
-        </div>
-        {/* paypal part */}
-        {orderData && !orderData.is_paid && orderData.total_price > 0 && (
-          <div className="mt-4">
-            <PayPalScriptProvider
-              options={{
-                "client-id":
-                  "ATjFh9E-QHXFcxUFOst0Pdt5d7mv0yS8kZc-7Fz7eY0B5H06vOicLq9EAWmuHPGgV7yPaqTWsN52sKHV",
-              }}
+        <Box className="flex-grow">
+          <Paper elevation={1} sx={{ mb: 6, p: 3 }}>
+            <Typography variant="h5" gutterBottom>
+              Shipping
+            </Typography>
+            <Typography variant="body1">
+              <strong>Address:</strong> {orderData.shippingAddress.address},{" "}
+              {orderData.shippingAddress.city}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Postal Code:</strong>{" "}
+              {orderData.shippingAddress.postal_code},{" "}
+              {orderData.shippingAddress.country}
+            </Typography>
+            {/* shipped status*/}
+            <Typography
+              variant="body1"
+              color={orderData.is_shipped ? "green" : "red"}
             >
-              <PayPalButtons
-                createOrder={createOrder}
-                onApprove={(data, actions) => {
-                  return actions.order.capture().then(function (details) {
-                    // alert('Transaction completed by ' + details.payer.name.given_name);
+              <strong>Shipping status:</strong>{" "}
+              {orderData.is_shipped ? "Shipped" : "Not Shipped"}
+            </Typography>
 
-                    dispatch(
-                      payOrder({ id: orderData.id, paymentResult: details })
-                    );
-                  });
-                }}
-              ></PayPalButtons>
-            </PayPalScriptProvider>
-          </div>
-        )}
-        {/* if user is admin and order is paid */}
-        {userInfo && userInfo.isAdmin && orderData.is_paid && (
-          <div className="mt-4 space-y-2">
-            {orderData.is_shipped ? (
-              <button
-                onClick={handleUnmarkAsShipped}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-4 rounded"
-              >
-                Unmark As Shipped
-              </button>
-            ) : (
-              <button
-                onClick={handleMarkAsShipped}
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-              >
-                Mark As Shipped
-              </button>
-            )}
+            <Typography
+              variant="body1"
+              color={orderData.is_delivered ? "green" : "red"}
+            >
+              <strong>Delivery status:</strong>{" "}
+              {orderData.is_delivered ? "Delivered" : "Not Delivered"}
+            </Typography>
+          </Paper>
 
-            {orderData.is_delivered ? (
-              <button
-                onClick={handleUnmarkAsDelivered}
-                className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-              >
-                Unmark As Delivered
-              </button>
-            ) : (
-              <button
-                onClick={handleMarkAsDelivered}
-                className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
-              >
-                Mark As Delivered
-              </button>
+          {/* Payment Method */}
+          <Paper elevation={1} sx={{ mb: 6, p: 3 }}>
+            <Typography variant="h5" gutterBottom>
+              Payment Method
+            </Typography>
+            <Typography variant="body1">
+              <strong>Method:</strong> {orderData.payment_method}
+            </Typography>
+            <Typography
+              variant="body1"
+              color={orderData.is_paid ? "green" : "red"}
+            >
+              <strong>Status:</strong> {orderData.is_paid ? "Paid" : "Not Paid"}
+            </Typography>
+          </Paper>
+
+          {/* Order Items */}
+          <Paper elevation={1} sx={{ p: 3 }}>
+            <Typography variant="h5" gutterBottom>
+              Order Items
+            </Typography>
+            <List>
+              {orderData.orderItems.map((item, index) => (
+                <ListItem key={index} divider className="flex flex-row gap-4">
+                  <ListItemIcon>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`Size: ${
+                      getSizeFromId(item.size).size
+                    } - ${getColorMappingString(item.colors)}`}
+                  />
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    ${item.price}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Box>
+
+        {/* Order Summary */}
+        <Box sx={{ width: "100%", maxWidth: "400px" }}>
+          <Paper elevation={1} sx={{ p: 3 }}>
+            <Typography variant="h5" gutterBottom>
+              Order Summary
+            </Typography>
+            <Box sx={{ my: 2 }}>
+              <Typography variant="body1" gutterBottom>
+                Items: $
+                {orderData.orderItems
+                  .reduce((acc, item) => acc + parseFloat(item.price), 0)
+                  .toFixed(2)}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Shipping: ${orderData.shipping_price}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Tax: ${orderData.tax_price}
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Total: ${orderData.total_price}
+              </Typography>
+            </Box>
+            {/* paypal part */}
+            {orderData && !orderData.is_paid && orderData.total_price > 0 && (
+              <div className="mt-4">
+                <PayPalScriptProvider
+                  options={{
+                    "client-id":
+                      "ATjFh9E-QHXFcxUFOst0Pdt5d7mv0yS8kZc-7Fz7eY0B5H06vOicLq9EAWmuHPGgV7yPaqTWsN52sKHV",
+                  }}
+                >
+                  <PayPalButtons
+                    createOrder={createOrder}
+                    onApprove={(data, actions) => {
+                      return actions.order.capture().then(function (details) {
+                        // alert('Transaction completed by ' + details.payer.name.given_name);
+
+                        dispatch(
+                          payOrder({ id: orderData.id, paymentResult: details })
+                        );
+                      });
+                    }}
+                  ></PayPalButtons>
+                </PayPalScriptProvider>
+              </div>
             )}
-          </div>
-        )}
-      </div>
-    </div>
+            {/* if user is admin and order is paid */}
+            {userInfo && userInfo.isAdmin && orderData.is_paid && (
+              <div className="mt-4 flex space-x-2">
+                {orderData.is_shipped ? (
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={handleUnmarkAsShipped}
+                  >
+                    Unmark As Shipped
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleMarkAsShipped}
+                  >
+                    Mark As Shipped
+                  </Button>
+                )}
+
+                {orderData.is_delivered ? (
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={handleUnmarkAsDelivered}
+                  >
+                    Unmark As Delivered
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleMarkAsDelivered}
+                  >
+                    Mark As Delivered
+                  </Button>
+                )}
+              </div>
+            )}
+          </Paper>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

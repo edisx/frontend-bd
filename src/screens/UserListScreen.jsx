@@ -16,6 +16,7 @@ import {
   Pagination
 } from '@mui/material';
 
+
 const UserListScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

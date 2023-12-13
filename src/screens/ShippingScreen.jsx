@@ -31,13 +31,13 @@ const ShippingScreen = () => {
   };
 
   return (
-    <Box sx={{ p: 5 }}>
+    <div className='p-5'>
       <CheckoutSteps step1 step2 />
-      <Paper elevation={3} sx={{ maxWidth: 'md', mx: 'auto', p: 3 }}>
+      <div className='flex flex-col items-center'>
         <Typography variant="h4" gutterBottom>
           Shipping
         </Typography>
-        <form onSubmit={submitHandler} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form onSubmit={submitHandler} style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: '33%' }}>
           <TextField
             label="Address"
             type="text"
@@ -88,8 +88,8 @@ const ShippingScreen = () => {
             Continue
           </Button>
         </form>
-      </Paper>
-    </Box>
+      </div>
+    </div>
   );
 };
 

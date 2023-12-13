@@ -10,8 +10,7 @@ import {
   FormControlLabel,
   Radio,
   Button,
-  Paper,
-  Box
+  Typography
 } from '@mui/material';
 
 const PaymentScreen = () => {
@@ -33,12 +32,14 @@ const PaymentScreen = () => {
   };
 
   return (
-    <Box sx={{ p: 5 }}>
+    <div className='p-5'>
       <CheckoutSteps step1 step2 step3 />
-
-      <Paper elevation={3} sx={{ maxWidth: 'md', mx: 'auto', p: 3 }}>
-        <form onSubmit={submitHandler}>
-          <FormControl component="fieldset" sx={{ mb: 3 }}>
+      <div className='flex flex-col items-center'>
+        <Typography variant="h4" gutterBottom>
+          Payment Method
+        </Typography>
+        <form onSubmit={submitHandler} style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: '33%' }}>
+          <FormControl component="fieldset" fullWidth>
             <FormLabel component="legend" sx={{ mb: 2, fontWeight: 'bold' }}>
               Select Method
             </FormLabel>
@@ -66,13 +67,13 @@ const PaymentScreen = () => {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ textTransform: 'none' }}
+            sx={{ mt: 2, textTransform: 'none' }}
           >
             Continue
           </Button>
         </form>
-      </Paper>
-    </Box>
+      </div>
+    </div>
   );
 };
 

@@ -35,7 +35,7 @@ const RegisterScreen = () => {
   }, [user, navigate]);
 
   return (
-    <Box className="container mx-auto px-4 mt-8 w-1/3" component={Paper} elevation={3} padding={4}>
+    <div className="container mx-auto px-4 mt-8 w-1/3">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <form onSubmit={handleSubmit}>
         <TextField 
@@ -81,7 +81,7 @@ const RegisterScreen = () => {
           Register
         </Button>
       </form>
-    </Box>
+    </div>
   );
 };
 

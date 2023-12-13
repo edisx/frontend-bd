@@ -10,12 +10,13 @@ import {
 } from "../features/productSlice";
 import { Trash } from "react-feather";
 import StarRating from "../components/StarRating";
-import { CircularProgress, Alert } from "@mui/material";
+import { CircularProgress, Alert, Button } from "@mui/material";
 
 const ProductScreen = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const productSingle = useSelector((state) => state.products);
+  const loginInfo = useSelector((state) => state.user);
   const { product, loading, error } = productSingle;
   const colors = useSelector((state) => state.colors);
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -90,11 +91,14 @@ const ProductScreen = () => {
         const colorEntry = colors.find((color) => color.meshId === meshId);
 
         if (colorEntry) {
-          meshColorMapping[meshName] = colorEntry.color.color_name;
+          meshColorMapping[meshName] = {
+            hexCode: colorEntry.color.hex_code,
+            colorName: colorEntry.color.color_name,
+          };
         }
       });
     }
-
+    console.log(meshColorMapping);
     return meshColorMapping;
   };
 
@@ -145,8 +149,14 @@ const ProductScreen = () => {
                 <span className="text-white font-medium">Customize</span>
               </button>
               <div className="mt-4">
-                {Object.entries(meshColorMap).map(([mesh, color]) => (
-                  <p key={mesh}>{`${formatString(mesh)}: ${color}`}</p>
+                {Object.entries(meshColorMap).map(([mesh, colorInfo]) => (
+                  <div className="flex flex-row gap-2" key={mesh}>
+                    <p>{`${formatString(mesh)}: ${colorInfo.colorName}`}</p>
+                    <div
+                      className="h-4 w-4 rounded-full mt-1"
+                      style={{ backgroundColor: colorInfo.hexCode }}
+                    ></div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -157,12 +167,14 @@ const ProductScreen = () => {
           </p>
           {/* rating */}
           <div className="mb-4">
-            <StarRating
-              totalStars={5}
-              onRatingSelected={() => {}}
-              initialRating={product.rating}
-              isInteractive={false}
-            />
+            {product.rating && product.rating !== "0.00" && (
+              <StarRating
+                totalStars={5}
+                onRatingSelected={() => {}}
+                initialRating={product.rating}
+                isInteractive={false}
+              />
+            )}
           </div>
           <p className="text-xl mb-6 font-medium">{product.price} €</p>
           <p className="mb-6 text-gray-600 leading-relaxed">
@@ -203,29 +215,45 @@ const ProductScreen = () => {
       </div>
 
       {/* Review Form */}
-      <div className="p-4 mt-20">
-        <h2 className="text-2xl font-medium mb-4">Write a Review</h2>
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <div>
-          <label htmlFor="rating">Rating</label>
-          <StarRating totalStars={5} onRatingSelected={handleRatingChange} />
+      {loginInfo?.userInfo ? (
+        <div className="p-4 mt-20">
+          <h2 className="text-2xl font-medium mb-4">Write a Review</h2>
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          <div>
+            <label htmlFor="rating">Rating</label>
+            <StarRating totalStars={5} onRatingSelected={handleRatingChange} />
+          </div>
+          <div>
+            <label htmlFor="comment">Comment</label>
+            <textarea
+              id="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="w-full p-2 border rounded"
+            ></textarea>
+          </div>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={submitReview}
+            style={{ marginRight: "8px" }}
+          >
+            Submit Review
+          </Button>
         </div>
-        <div>
-          <label htmlFor="comment">Comment</label>
-          <textarea
-            id="comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="w-full p-2 border rounded"
-          ></textarea>
+      ) : (
+        <div className="p-4 mt-20">
+          <h2 className="text-2xl font-medium mb-4">Write a Review</h2>
+          <p className="text-gray-600">
+            Please{" "}
+            <a href="/login" className="text-blue-600 hover:underline">
+              login
+            </a>{" "}
+            to write a review.
+          </p>
         </div>
-        <button
-          onClick={submitReview}
-          className="bg-blue-500 text-white px-8 py-2 rounded-lg shadow-lg transition-transform duration-150 ease-in-out hover:scale-105"
-        >
-          Submit Review
-        </button>
-      </div>
+      )}
 
       {/* Display Reviews */}
       <div className="mt-8 bg-white p-4">

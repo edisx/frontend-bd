@@ -30,7 +30,7 @@ const Header = () => {
         <div>
           <Link
             to="/"
-            className="text-xl hover:text-white transition duration-200 flex flex-row items-center"
+            className="bg-black text-xl hover:text-white transition duration-200 flex flex-row items-center"
           >
             <img
               src="/shoe.svg"
@@ -38,7 +38,7 @@ const Header = () => {
               className="inline-block mr-2 svg-white"
               style={{ width: '30px', height: '30px' }}
             />
-            <span>
+            <span className="hidden md:inline-block">
             ShoeShop
             </span>
           </Link>

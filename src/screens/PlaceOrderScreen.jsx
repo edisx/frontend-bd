@@ -71,7 +71,7 @@ const PlaceOrderScreen = () => {
       <Box className="flex flex-col md:flex-row gap-8">
         {/* Shipping Information */}
         <Box className="flex-grow">
-          <Paper elevation={3} sx={{ mb: 6, p: 3 }}>
+          <Paper elevation={1} sx={{ mb: 6, p: 3 }}>
             <Typography variant="h5" gutterBottom>Shipping</Typography>
             <Typography variant="body1">
               <strong>Shipping:</strong> {cart.shippingInfo.address}, {cart.shippingInfo.city} {cart.shippingInfo.postalCode}, {cart.shippingInfo.country}
@@ -79,7 +79,7 @@ const PlaceOrderScreen = () => {
           </Paper>
 
           {/* Payment Method */}
-          <Paper elevation={3} sx={{ mb: 6, p: 3 }}>
+          <Paper elevation={1} sx={{ mb: 6, p: 3 }}>
             <Typography variant="h5" gutterBottom>Payment Method</Typography>
             <Typography variant="body1">
               <strong>Method: </strong> {cart.paymentMethod}
@@ -87,7 +87,7 @@ const PlaceOrderScreen = () => {
           </Paper>
 
           {/* Order Items */}
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={1} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Order Items</Typography>
             <List>
               {cart.cartItems.length === 0 ? (
@@ -112,7 +112,7 @@ const PlaceOrderScreen = () => {
 
         {/* Order Summary */}
         <Box sx={{ width: '100%', maxWidth: '400px' }}>
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={1} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Order Summary</Typography>
             <Box sx={{ my: 2 }}>
               <Typography variant="body1" gutterBottom>Items: {orderDetails.itemsPrice} €</Typography>
