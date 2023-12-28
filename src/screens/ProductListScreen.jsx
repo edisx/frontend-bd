@@ -81,6 +81,7 @@ const ProductListScreen = () => {
               <TableCell>Photo</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Price</TableCell>
+              <TableCell>Count in stock</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Visibility</TableCell>
               <TableCell>Actions</TableCell>
@@ -101,6 +102,13 @@ const ProductListScreen = () => {
                 </TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.price}</TableCell>
+                <TableCell style={{ color: product.count_in_stock === 0 ? 'red' : 'inherit' }}>
+                  {product.count_in_stock === 0 ? (
+                    <span style={{ color: 'red' }}>Out of Stock</span>
+                  ) : (
+                    product.count_in_stock
+                  )}
+                </TableCell>
                 <TableCell>
                   {product.category ? product.category.name : 'No category available'}
                 </TableCell>
