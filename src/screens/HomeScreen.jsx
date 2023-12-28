@@ -36,6 +36,7 @@ const HomeScreen = () => {
 
   if (loading === "loading") return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;
+  if (products.length === 0) return <Alert severity="info">No products with the keyword "{keyword}"</Alert>;
 
   return (
     <div className="container mx-auto px-4 mt-9 flex flex-col min-h-screen flex-grow justify-between">
