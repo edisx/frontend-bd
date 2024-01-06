@@ -44,6 +44,8 @@ const Configurator = () => {
 
   const totalMeshes = meshes.length;
 
+  const isMobile = window.innerWidth < 640; // Check if window size is mobile
+
   return (
     <div className="w-screen">
       {/* upper */}
@@ -67,9 +69,9 @@ const Configurator = () => {
         </button>
       </div>
       {/* lower */}
-      <div className="flex justify-center space-x-4 p-4">
+      <div className={`flex justify-center ${isMobile ? "flex-wrap" : "space-x-4"} p-4`}>
         {selectedMesh?.colors.map((color) => (
-          <div key={color.id} className="text-center relative w-20">
+          <div key={color.id} className={`text-center relative w-20 ${isMobile ? "mb-4" : ""}`}>
             <div
               onClick={() => {
                 setSelectedColor(color);

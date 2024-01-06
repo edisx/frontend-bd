@@ -13,12 +13,16 @@ import {
   Box,
   Link,
   Alert,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 
 const CartScreen = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleRemoveFromCart = (uniqueId) => {
     dispatch(removeFromCart(uniqueId));
@@ -46,8 +50,8 @@ const CartScreen = () => {
       <Typography variant="h5" gutterBottom className="mb-10">
         Your Cart
       </Typography>
-      <div className="flex flex-row">
-        <Box flex={2} mr={2}>
+      <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'}`}>
+        <Box flex={isMobile ? 1 : 2} mb={isMobile ? 2 : 0} mr={!isMobile && 2}>
           {cartItems.length === 0 ? (
             <Alert severity="info">Your cart is empty</Alert>
           ) : (
@@ -74,9 +78,7 @@ const CartScreen = () => {
                           {item.name}
                         </Link>
                       }
-                      secondary={`Size: ${
-                        item.size.size
-                      } - ${getColorMappingString(item.colors)}`}
+                      secondary={`Size: ${item.size.size} - ${getColorMappingString(item.colors)}`}
                     />
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                       {item.price} €
@@ -96,7 +98,7 @@ const CartScreen = () => {
           )}
         </Box>
 
-        <Box flex={1} ml={2}>
+        <Box flex={isMobile ? 1 : 1} ml={!isMobile && 2}>
           <div>
             <Typography variant="h5" gutterBottom>
               Order Summary

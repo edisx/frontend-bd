@@ -4,6 +4,7 @@ import { fetchUserProfile, updateUserProfile } from "../features/userSlice";
 import { getMyOrders } from "../features/orderSlice";
 import { Link } from "react-router-dom";
 import { X } from "react-feather";
+import { useTheme, useMediaQuery } from "@mui/material";
 import {
   Alert,
   TextField,
@@ -25,6 +26,9 @@ const ProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
   const [matchError, setMatchError] = useState(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const dispatch = useDispatch();
   const { userInfo, error } = useSelector((state) => state.user);
@@ -58,9 +62,12 @@ const ProfileScreen = () => {
     return dateString.split("T")[0];
   };
 
+  const formContainerWidth = isMobile ? 'w-full' : 'w-1/2 pr-4';
+  const ordersContainerWidth = isMobile ? 'w-full mt-4' : 'w-1/2 pl-4';
+
   return (
-    <div className="container mx-auto px-4 mt-8 flex">
-      <div className="w-1/2 pr-4">
+    <div className={`container mx-auto px-4 mt-8 ${isMobile ? 'flex flex-col' : 'flex'}`}>
+      <div className={formContainerWidth}>
         <Typography variant="h4" gutterBottom>
           User Profile
         </Typography>
@@ -117,7 +124,7 @@ const ProfileScreen = () => {
           </Button>
         </form>
       </div>
-      <div className="w-1/2 pl-4">
+      <div className={ordersContainerWidth}>
         <Typography variant="h4" gutterBottom>
           My Orders
         </Typography>
@@ -150,8 +157,8 @@ const ProfileScreen = () => {
                     {order.is_paid ? formatDate(order.paid_at) : <X />}
                   </TableCell>
                   <TableCell>
-                      {order.is_shipped ? formatDate(order.shipped_at) : <X />}
-                    </TableCell>
+                    {order.is_shipped ? formatDate(order.shipped_at) : <X />}
+                  </TableCell>
                   <TableCell>
                     {order.is_delivered ? (
                       formatDate(order.delivered_at)
