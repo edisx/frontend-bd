@@ -98,7 +98,6 @@ const ProductScreen = () => {
         }
       });
     }
-    console.log(meshColorMapping);
     return meshColorMapping;
   };
 

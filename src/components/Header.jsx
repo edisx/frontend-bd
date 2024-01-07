@@ -25,8 +25,9 @@ const Header = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-black h-16 flex items-center justify-center">
-      <div className="flex items-center justify-between w-10/12 mx-auto text-[#bdbdc0]">
+    <div className="bg-black h-16 flex items-center w-full overflow-x-hidden">
+      <div className="flex items-center justify-between mx-auto px-4 w-full max-w-screen-xl text-[#bdbdc0]">
+      {/* logo */}
         <div>
           <Link
             to="/"
@@ -43,10 +44,11 @@ const Header = () => {
             </span>
           </Link>
         </div>
+        {/* search box */}
         <div className="w-1/3">
           <SearchBox />
         </div>
-
+    {/* everything */}
         <div className="flex items-center">
           <ul className="flex items-center gap-4">
             <li>

@@ -2,30 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../features/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { Alert, TextField, Button, Paper, Box } from '@mui/material';
+import { Alert, TextField, Button } from '@mui/material';
 
 const RegisterScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [errorMessage, setErrorMessage] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const user = useSelector(state => state.user);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser({ name, email, password }))
       .unwrap()
-      .then(response => {
-        navigate('/'); 
-      })
-      .catch(error => {
-        setErrorMessage(error.error);
-      });
+      .then(() => navigate('/'))
+      .catch(error => setErrorMessage(error.error));
   };
 
   useEffect(() => {
@@ -35,7 +29,7 @@ const RegisterScreen = () => {
   }, [user, navigate]);
 
   return (
-    <div className="container mx-auto px-4 mt-8 w-1/3">
+    <div style={{ padding: '16px', maxWidth: '400px', margin: '8px auto' }}>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <form onSubmit={handleSubmit}>
         <TextField 

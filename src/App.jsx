@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Header from "./components/Header";
+import NewHeader from "./components/NewHeader";
 import Footer from "./components/Footer";
 
 import HomeScreen from "./screens/HomeScreen";
@@ -33,7 +34,7 @@ const Layout = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {showHeaderFooter && <Header />}
+      {showHeaderFooter && <NewHeader />}
       <div className={showHeaderFooter ? "flex-grow p-4" : "flex-grow"}>
         {/* all the routes */}
         <Routes>
