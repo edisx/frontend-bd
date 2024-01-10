@@ -117,11 +117,11 @@ const ProductScreen = () => {
     <div className="container mx-auto px-4 mt-12">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         <div className="col-span-2">
-          <div className="bg-gray-200 w-96 h-96 mx-auto relative">
+          <div className="bg-gray-200 w-72 h-72 sm:w-96 sm:h-96 mx-auto relative">
             <img
               src={currentImage || "/placeholder.png"}
               alt={product.name}
-              className="absolute top-0 left-0 right-0 bottom-0 m-auto object-cover w-96 h-96 rounded-lg shadow-md"
+              className="absolute top-0 left-0 right-0 bottom-0 m-auto object-cover w-72 h-72 sm:w-96 sm:h-96 rounded-lg shadow-md"
             />
           </div>
 
