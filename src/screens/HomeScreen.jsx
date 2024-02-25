@@ -43,7 +43,7 @@ const HomeScreen = () => {
 
   return (
     <>
-      <Alert severity="info">
+      {/* <Alert severity="info">
         <div>
           <p>
             This project is a demonstration prototype developed to showcase a
@@ -68,7 +68,7 @@ const HomeScreen = () => {
             </a>
           </div>
         </div>
-      </Alert>
+      </Alert> */}
       <div className="container mx-auto px-4 mt-9 flex flex-col min-h-screen flex-grow justify-between">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {products &&
